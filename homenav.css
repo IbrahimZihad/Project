@@ -1,0 +1,69 @@
+/* General Styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* Navbar Styles */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #6e6e6e;
+    padding: 15px 20px;
+    color: white;
+}
+
+/* Logo */
+.logo {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Navigation List */
+.nav-list {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-list li {
+    margin: 0 15px;
+}
+
+.nav-list a {
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
+    transition: color 0.3s ease-in-out;
+}
+
+.nav-list a:hover {
+    color: #f39c12;
+}
+
+/* Login Button */
+#login-btn {
+    background-color: rgba(224, 85, 229, 0.9);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+#login-btn:hover {
+    background-color: rgba(255, 98, 231, 0.5);
+}
+
+#bg-image-container {
+    width: 100%;
+    height: 40%;  
+    background-image: url('/images/background.png');  
+    background-size: cover;
+    background-position: center;
+}
