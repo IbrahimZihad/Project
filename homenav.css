@@ -112,5 +112,9 @@ body {
     text-decoration: none;
 }
 
-
+#div2 {
+    background-color: blue;
+    width: 100vw;
+    height: 200px;
+}
 
