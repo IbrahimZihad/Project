@@ -155,5 +155,9 @@ body {
     display: flex;
     object-fit: contain;
     background-size: cover;
-    left: -154px;
+}
+
+#div3b {
+    position: absolute;
+    right: 0;
 }
