@@ -157,6 +157,17 @@ body {
     background-size: cover;
 }
 
+#motivation {
+    margin: 100px 0 0 150px;
+}
+#motivation li {
+    text-decoration: none;
+    list-style: none;
+    font-family: cursive;
+    font-size: 60px;
+    color: #E81140;
+}
+
 #div3b {
     position: absolute;
     right: 0;
