@@ -40,13 +40,18 @@
 
 .nav-list a {
     text-decoration: none;
-    color: white;
+    color: #F8FAFC;
     font-size: 16px;
     transition: color 0.3s ease-in-out;
 }
 
+a[aria-current="page"] {
+    font-weight: bold;
+    font-size: 17px;
+}
+
 .nav-list a:hover {
-    color: #f39c12;
+    color: #ffffff;
 }
 .main{
     width: 100%;
@@ -74,39 +79,42 @@
     height: 500px;
     background-color: var(--footer-color);
     padding: 10px;
-  }
+}
   
-  .footer1, .footer2, .footer3 {
+.footer1, .footer2, .footer3 {
+    
     flex: 1; 
     flex-direction: column;
     height: 100%;
     color: white;
     font-size: 18px;
     font-weight: bold;
-  }
+}
   
   
-  .footer1 { 
+.footer1 { 
     display: flex;
     justify-content: center;
-  }
+}
   
-  .footer2 {
+.footer2 {
     display: flex;
     align-items: center;
-  }
+}
 
-  .footer2 a {
+.footer2 a {
     text-decoration: none;
     color: white;
-  }
+}
 
-  .footer2 a:hover {
-    color: #ffa1a1;
-  }
+.footer2 a:hover {
+    color: #f5f2f2;
+    font-weight: bolder;
+    font-size: 20px;
+}
   
-  .footer3 { 
+.footer3 { 
     display: flex;
     justify-content: center;
     align-items: center;
-  }
+}
