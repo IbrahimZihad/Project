@@ -1,47 +1,58 @@
 <?php
-header('Content-Type: application/json');
-require_once 'db.php';
+// Set response content type to JSON
+header("Content-Type: application/json");
 
+// Include your database connection file here
+include 'db.php'; // Make sure this file creates a $conn (mysqli) object
+
+// Read and decode the incoming JSON
 $data = json_decode(file_get_contents("php://input"), true);
-$name = trim($data['name'] ?? '');
-$email = trim($data['email'] ?? '');
 
-if (empty($name) || empty($email)) {
-    echo json_encode(['success' => false, 'message' => 'Project name and user email are required.']);
+if (!isset($data['email']) || !isset($data['name'])) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Required fields are missing.'
+    ]);
     exit;
 }
 
-// Find the user by email
-$stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
-$stmt->execute([$email]);
-$user = $stmt->fetch(PDO::FETCH_ASSOC);
+$email = $conn->real_escape_string($data['email']);
+$name = $conn->real_escape_string($data['name']);
 
-if (!$user) {
-    echo json_encode(['success' => false, 'message' => 'User not found.']);
+// Step 1: Find user_id by email
+$userQuery = "SELECT user_id FROM users WHERE email = ?";
+$stmt = $conn->prepare($userQuery);
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows === 0) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'User not found.'
+    ]);
     exit;
 }
 
-$userId = $user['id'];
+$user = $result->fetch_assoc();
+$user_id = $user['user_id'];
 
-try {
-    // Begin transaction
-    $pdo->beginTransaction();
+// Step 2: Insert project into the projects table
+$insertQuery = "INSERT INTO projects (project_name, created_by) VALUES (?, ?)";
+$stmt = $conn->prepare($insertQuery);
+$stmt->bind_param("si", $name, $user_id);
 
-    // Insert new project
-    $stmt = $pdo->prepare("INSERT INTO projects (name, created_by) VALUES (?, ?)");
-    $stmt->execute([$name, $userId]);
-    $projectId = $pdo->lastInsertId();
-
-    // Insert into project_members table, mark the creator as Project Manager
-    $stmt = $pdo->prepare("INSERT INTO project_members (project_id, user_id, role) VALUES (?, ?, ?)");
-    $stmt->execute([$projectId, $userId, 'Project Manager']);
-
-    // Commit transaction
-    $pdo->commit();
-
-    echo json_encode(['success' => true, 'message' => 'Project created successfully.']);
-} catch (Exception $e) {
-    $pdo->rollBack();
-    echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+if ($stmt->execute()) {
+    echo json_encode([
+        'success' => true,
+        'message' => 'Project created successfully.'
+    ]);
+} else {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Failed to create project: ' . $conn->error
+    ]);
 }
+
+$conn->close();
 ?>

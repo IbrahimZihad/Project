@@ -93,21 +93,21 @@
     </div>
     <script>
         let email = '';
-    
+
         window.onload = () => {
             const params = new URLSearchParams(window.location.search);
             email = params.get('email');
-    
+
             if (!email) {
                 alert("No email found. Redirecting to login.");
                 window.location.href = 'homepage.html';
                 return;
             }
-    
+
             loadUserName(email);
             loadProjects(email);
         };
-    
+
         function loadUserName(email) {
             fetch('backend/get_user_by_email.php', {
                 method: 'POST',
@@ -124,7 +124,7 @@
             })
             .catch(err => console.error('Fetch name error:', err));
         }
-    
+
         function loadProjects(email) {
             fetch('backend/get_projects_by_email.php', {
                 method: 'POST',
@@ -135,24 +135,21 @@
             .then(data => {
                 if (data.success) {
                     const dropdownMenu = document.querySelector('.dropdown-menu');
-                    dropdownMenu.innerHTML = ''; // Clear old content
-    
+                    const projectList = document.getElementById('projectList');
+                    dropdownMenu.innerHTML = '';
+                    projectList.innerHTML = '';
+
                     data.projects.forEach(project => {
                         const link = document.createElement('a');
                         link.href = `project.html?id=${project.id}&email=${email}`;
                         link.textContent = project.name;
                         dropdownMenu.appendChild(link);
-                    });
-    
-                    const createLink = document.createElement('a');
-                    createLink.href = "#";
-                    createLink.textContent = 'Create New Project';
-                    createLink.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    toggleCreateModal(true);
-                    });
-                    dropdownMenu.appendChild(createLink);
 
+                        const item = document.createElement('div');
+                        item.className = 'p-4 border rounded shadow bg-white hover:bg-gray-50';
+                        item.innerHTML = `<a href="project.html?id=${project.id}&email=${email}" class="text-lg font-medium text-blue-600">${project.name}</a>`;
+                        projectList.appendChild(item);
+                    });
                 } else {
                     console.error('Project error:', data.message);
                 }
@@ -180,29 +177,28 @@
             fetch('backend/create_project.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, email }) // `email` comes from loadUserName() on page load
+                body: JSON.stringify({ name: name, email: email })
             })
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                alert('Project created successfully');
-                toggleCreateModal(false);
-                loadProjects(email); // Refresh dropdown
+                    alert('Project created successfully');
+                    toggleCreateModal(false);
+                    loadProjects(email);
                 } else {
-                alert('Failed: ' + data.message);
+                    alert('Failed: ' + data.message);
                 }
             })
             .catch(err => console.error('Project creation error:', err));
         }
 
-    
         const dropdown = document.querySelector('.dropdown');
         const toggle = dropdown.querySelector('.dropdown-toggle');
-    
+
         toggle.addEventListener('click', () => {
             dropdown.classList.toggle('open');
         });
-    
+
         function confirmLogout() {
             if (confirm("Do you want to log out?")) {
                 window.location.href = 'homepage.html';
