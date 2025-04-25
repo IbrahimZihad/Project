@@ -1,58 +1,35 @@
 <?php
-// Set response content type to JSON
-header("Content-Type: application/json");
+header('Content-Type: application/json');
+require_once 'db.php';
 
-// Include your database connection file here
-include 'db.php'; // Make sure this file creates a $conn (mysqli) object
-
-// Read and decode the incoming JSON
 $data = json_decode(file_get_contents("php://input"), true);
 
-if (!isset($data['email']) || !isset($data['name'])) {
-    echo json_encode([
-        'success' => false,
-        'message' => 'Required fields are missing.'
-    ]);
+$email = $data['email'] ?? '';
+$name = $data['name'] ?? '';
+
+if ($email == '' || $name == '') {
+    echo json_encode(['success' => false, 'message' => 'Required fields are missing.']);
     exit;
 }
-
-$email = $conn->real_escape_string($data['email']);
-$name = $conn->real_escape_string($data['name']);
 
 // Step 1: Find user_id by email
-$userQuery = "SELECT user_id FROM users WHERE email = ?";
-$stmt = $conn->prepare($userQuery);
-$stmt->bind_param("s", $email);
-$stmt->execute();
-$result = $stmt->get_result();
+$query = $pdo->prepare("SELECT user_id FROM users WHERE email = ?");
+$query->execute([$email]);
+$user = $query->fetch(PDO::FETCH_ASSOC);
 
-if ($result->num_rows === 0) {
-    echo json_encode([
-        'success' => false,
-        'message' => 'User not found.'
-    ]);
+if (!$user) {
+    echo json_encode(['success' => false, 'message' => 'User not found.']);
     exit;
 }
 
-$user = $result->fetch_assoc();
 $user_id = $user['user_id'];
 
 // Step 2: Insert project into the projects table
-$insertQuery = "INSERT INTO projects (project_name, created_by) VALUES (?, ?)";
-$stmt = $conn->prepare($insertQuery);
-$stmt->bind_param("si", $name, $user_id);
+$query = $pdo->prepare("INSERT INTO projects (project_name, created_by) VALUES (?, ?)");
 
-if ($stmt->execute()) {
-    echo json_encode([
-        'success' => true,
-        'message' => 'Project created successfully.'
-    ]);
+if ($query->execute([$name, $user_id])) {
+    echo json_encode(['success' => true, 'message' => 'Project created successfully.']);
 } else {
-    echo json_encode([
-        'success' => false,
-        'message' => 'Failed to create project: ' . $conn->error
-    ]);
+    echo json_encode(['success' => false, 'message' => 'Failed to create project.']);
 }
-
-$conn->close();
 ?>
