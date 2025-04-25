@@ -18,13 +18,12 @@
             <li><a href="/">Product Guide</a></li>
             <li><a href="/">About</a></li>
         </ul>
-        <ul class="nav-list">
-            Ibrahim
+        <ul class="nav-list" onclick="confirmLogout()">
+            <p class="cursor">Ibrahim</p>
         </ul>
     </navbar>
     <div class="main">
         <div class="sidebar">
-          <div class="menu-item">Dashboard</div>
           
             <div class="dropdown">
               <div class="dropdown-toggle">Projects ▼</div>
@@ -76,6 +75,12 @@
         toggle.addEventListener('click', () => {
           dropdown.classList.toggle('open');
         });
+        function confirmLogout() {
+            const confirmed = confirm("Do you want to log out?");
+            if (confirmed) {
+            window.location.href = "#";
+            }
+        }
       </script>
 </body>
 </html>
