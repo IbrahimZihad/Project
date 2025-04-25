@@ -69,11 +69,10 @@ a[aria-current="page"] {
 }
 .sidebar {
     width: 220px;
-    height: 100vh;
+    height: 769px;
     background-color: var(--sidebar-color); 
     color: #F8FAFC;
     padding: 1rem;
-    z-index: -1;
   }
   
   .menu-item,
