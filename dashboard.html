@@ -23,8 +23,19 @@
         </ul>
     </navbar>
     <div class="main">
-        <div class="left">
-
+        <div class="sidebar">
+          <div class="menu-item">Dashboard</div>
+          
+            <div class="dropdown">
+              <div class="dropdown-toggle">Projects ▼</div>
+              <div class="dropdown-menu">
+                <a href="#">All Projects</a>
+                <a href="#">Create New</a>
+                <a href="#">Archived</a>
+              </div>
+            </div>
+          
+          <div class="menu-item">Team</div>
         </div>
         <div class="right">
 
@@ -58,5 +69,13 @@
             </p>
         </div>
     </div>
+    <script>
+        const dropdown = document.querySelector('.dropdown');
+        const toggle = dropdown.querySelector('.dropdown-toggle');
+    
+        toggle.addEventListener('click', () => {
+          dropdown.classList.toggle('open');
+        });
+      </script>
 </body>
 </html>

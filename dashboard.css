@@ -64,8 +64,62 @@ a[aria-current="page"] {
     height: 100%;
     background-color: var(--sidebar-color);
     color: #F1F5F9;
-    padding: 15px 20px;
+    padding: 1rem;
+    z-index: -1;
 }
+.sidebar {
+    width: 220px;
+    height: 100vh;
+    background-color: var(--sidebar-color); 
+    color: #F8FAFC;
+    padding: 1rem;
+    z-index: -1;
+  }
+  
+  .menu-item,
+  .dropdown-toggle {
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 8px;
+    transition: background-color 0.3s;
+  }
+  
+  .menu-item:hover,
+  .dropdown-toggle:hover {
+    background-color: #4338CA; /* Indigo-700 */
+  }
+  
+  .dropdown-menu {
+    display: none;
+    flex-direction: column;
+    padding-left: 10px;
+    margin-top: 5px;
+  }
+  
+  .dropdown-menu a {
+    text-decoration: none;
+    color: #E0E7FF; /* Indigo-200 */
+    padding: 8px;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+  
+  .dropdown-menu a:hover {
+    background-color: #4F46E5; /* Indigo-600 */
+    color: white;
+  }
+  .arrow {
+    font-size: 12px;
+  }
+
+  .dropdown.open .dropdown-menu {
+    display: flex;
+  }
+
+  .dropdown.open .arrow {
+    transform: rotate(180deg);
+  }
 .right{
     width: 80%;
     height: 100%;
