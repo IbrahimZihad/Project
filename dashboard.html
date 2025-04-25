@@ -43,7 +43,21 @@
                 + Create New
               </button>
             </div>
-          
+            <!-- Create New Project Modal -->
+            <div id="createProjectModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                <div class="bg-white p-6 rounded shadow w-96">
+                <h2 class="text-xl font-bold mb-4">Create New Project</h2>
+                
+                <label class="block mb-1 text-sm">Project Name</label>
+                <input id="projectNameInput" type="text" class="w-full border p-2 mb-4" placeholder="Enter project name">
+                
+                <div class="flex justify-end gap-2">
+                    <button onclick="createProject()" class="bg-green-500 text-white px-4 py-2 rounded">Create</button>
+                    <button onclick="toggleCreateModal(false)" class="bg-red-500 text-white px-4 py-2 rounded">Cancel</button>
+                </div>
+                </div>
+            </div>
+              
             <div id="projectList" class="grid gap-4">
               <!-- Projects will be inserted here -->
             </div>
@@ -131,17 +145,57 @@
                         dropdownMenu.appendChild(link);
                     });
     
-                    // Add Create New
                     const createLink = document.createElement('a');
-                    createLink.href = `create_project.html?email=${email}`;
-                    createLink.textContent = 'Create New';
+                    createLink.href = "#";
+                    createLink.textContent = 'Create New Project';
+                    createLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    toggleCreateModal(true);
+                    });
                     dropdownMenu.appendChild(createLink);
+
                 } else {
                     console.error('Project error:', data.message);
                 }
             })
             .catch(err => console.error('Fetch project error:', err));
         }
+
+        function toggleCreateModal(show) {
+            const modal = document.getElementById('createProjectModal');
+            if (show) {
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+                document.getElementById('projectNameInput').value = '';
+            }
+        }
+
+        function createProject() {
+            const name = document.getElementById('projectNameInput').value.trim();
+            if (!name) {
+                alert('Project name is required');
+                return;
+            }
+
+            fetch('backend/create_project.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email }) // `email` comes from loadUserName() on page load
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                alert('Project created successfully');
+                toggleCreateModal(false);
+                loadProjects(email); // Refresh dropdown
+                } else {
+                alert('Failed: ' + data.message);
+                }
+            })
+            .catch(err => console.error('Project creation error:', err));
+        }
+
     
         const dropdown = document.querySelector('.dropdown');
         const toggle = dropdown.querySelector('.dropdown-toggle');
