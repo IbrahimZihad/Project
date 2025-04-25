@@ -19,7 +19,7 @@
             <li><a href="/">About</a></li>
         </ul>
         <ul class="nav-list" onclick="confirmLogout()">
-            <p class="cursor">Ibrahim</p>
+            <p class="cursor">Loading...</p> 
         </ul>
     </navbar>
     <div class="main">
@@ -70,6 +70,7 @@
     <script>
         const dropdown = document.querySelector('.dropdown');
         const toggle = dropdown.querySelector('.dropdown-toggle');
+        let email='';
     
         toggle.addEventListener('click', () => {
           dropdown.classList.toggle('open');
@@ -80,6 +81,68 @@
             window.location.href = "#";
             }
         }
-      </script>
+
+        function loadUserName() {
+            const urlParams = new URLSearchParams(window.location.search);
+            email = urlParams.get('email');
+
+            if (!email) {
+                console.error('No email found.');
+                return;
+            }
+
+            // Fetch and display user name
+            fetch('backend/get_user_by_email.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                document.querySelector('.nav-list .cursor').textContent = data.name;
+                loadProjects(email); // ✅ Now fetch projects after name loads
+                } else {
+                console.error('Failed to load user name:', data.message);
+                }
+            })
+            .catch(error => console.error('Error fetching user name:', error));
+        }
+
+        function loadProjects(email) {
+            fetch('backend/get_projects_by_email.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                const dropdownMenu = document.querySelector('.dropdown-menu');
+                dropdownMenu.innerHTML = ''; // Clear existing
+
+                // Inject projects
+                data.projects.forEach(project => {
+                    const a = document.createElement('a');
+                    a.href = `project.html?id=${project.id}`;
+                    a.textContent = project.name;
+                    dropdownMenu.appendChild(a);
+                });
+
+                // Optionally add "Create New"
+                const createNew = document.createElement('a');
+                createNew.href = 'create_project.html';
+                createNew.textContent = 'Create New';
+                dropdownMenu.appendChild(createNew);
+
+                } else {
+                console.error('No projects:', data.message);
+                }
+            })
+            .catch(error => console.error('Error fetching projects:', error));
+        }
+
+
+    </script>
 </body>
 </html>
