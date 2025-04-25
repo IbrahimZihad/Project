@@ -65,7 +65,7 @@ a[aria-current="page"] {
 
 .sidebar {
     width: 220px;
-    height: 780px;
+    height: 800px;
     background-color: var(--sidebar-color); 
     color: #F8FAFC;
     padding: 1rem;
