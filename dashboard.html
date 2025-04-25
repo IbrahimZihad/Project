@@ -126,45 +126,48 @@
         }
 
         function loadProjects(email) {
-            fetch('backend/get_projects_by_email.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email })
-            })
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error(`HTTP error! status: ${res.status}`);
-                }
-                return res.json();
-            })
-            .then(data => {
-                if (data.success && Array.isArray(data.projects)) {
-                    const dropdownMenu = document.querySelector('.dropdown-menu');
-                    const projectList = document.getElementById('projectList');
-                    dropdownMenu.innerHTML = '';
-                    projectList.innerHTML = '';
-        
-                    if (data.projects.length === 0) {
-                        projectList.innerHTML = '<p class="text-gray-500">No projects found.</p>';
-                    } else {
-                        data.projects.forEach(project => {
-                            const link = document.createElement('a');
-                            link.href = `project.html?id=${project.id}&email=${email}`;
-                            link.textContent = project.name;
-                            dropdownMenu.appendChild(link);
-        
-                            const item = document.createElement('div');
-                            item.className = 'p-4 border rounded shadow bg-white hover:bg-gray-50';
-                            item.innerHTML = `<a href="project.html?id=${project.id}&email=${email}" class="text-lg font-medium text-blue-600">${project.name}</a>`;
-                            projectList.appendChild(item);
-                        });
-                    }
-                } else {
-                    console.error('Project error:', data.message || 'Invalid response format');
-                }
-            })
-            .catch(err => console.error('Fetch project error:', err));
+    console.log("Fetching projects for:", email);
+
+    fetch('backend/get_projects_by_email.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log("Response from API:", data);
+
+        if (!data.success) {
+            console.error("Project loading failed:", data.message);
+            return;
         }
+
+        const dropdownMenu = document.querySelector('.dropdown-menu');
+        const projectList = document.getElementById('projectList');
+
+        if (!dropdownMenu || !projectList) {
+            console.error("Dropdown or project list container missing in DOM.");
+            return;
+        }
+
+        dropdownMenu.innerHTML = '';
+        projectList.innerHTML = '';
+
+        data.projects.forEach(project => {
+            const link = document.createElement('a');
+            link.href = `project.html?id=${project.id}&email=${email}`;
+            link.textContent = project.name;
+            dropdownMenu.appendChild(link);
+
+            const item = document.createElement('div');
+            item.className = 'p-4 border rounded shadow bg-white hover:bg-gray-50';
+            item.innerHTML = `<a href="project.html?id=${project.id}&email=${email}" class="text-lg font-medium text-blue-600">${project.name}</a>`;
+            projectList.appendChild(item);
+        });
+    })
+    .catch(err => console.error("Error fetching projects:", err));
+}
+
 
         function toggleCreateModal(show) {
             const modal = document.getElementById('createProjectModal');
