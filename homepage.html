@@ -180,7 +180,7 @@
             if (data.success) {
               alert('Login Successful!');
               closeLoginModal();
-              // You can redirect or update UI here
+              window.location.href = `dashboard.html?email=${encodeURIComponent(email)}`
             } else {
               alert('Login Failed: ' + data.message);
             }
@@ -203,6 +203,7 @@
             if (data.success) {
               alert('Signup Successful! Please log in.');
               closeSignUpModal();
+              window.location.href = `dashboard.html?email=${encodeURIComponent(email)}`
             } else {
               alert('Signup Failed: ' + data.message);
             }
