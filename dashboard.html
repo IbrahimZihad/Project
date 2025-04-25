@@ -68,47 +68,39 @@
         </div>
     </div>
     <script>
-        const dropdown = document.querySelector('.dropdown');
-        const toggle = dropdown.querySelector('.dropdown-toggle');
-        let email='';
+        let email = '';
     
-        toggle.addEventListener('click', () => {
-          dropdown.classList.toggle('open');
-        });
-        function confirmLogout() {
-            const confirmed = confirm("Do you want to log out?");
-            if (confirmed) {
-            window.location.href = "#";
-            }
-        }
-
-        function loadUserName() {
-            const urlParams = new URLSearchParams(window.location.search);
-            email = urlParams.get('email');
-
+        window.onload = () => {
+            const params = new URLSearchParams(window.location.search);
+            email = params.get('email');
+    
             if (!email) {
-                console.error('No email found.');
+                alert("No email found. Redirecting to login.");
+                window.location.href = 'homepage.html';
                 return;
             }
-
-            // Fetch and display user name
+    
+            loadUserName(email);
+            loadProjects(email);
+        };
+    
+        function loadUserName(email) {
             fetch('backend/get_user_by_email.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: email })
+                body: JSON.stringify({ email })
             })
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                document.querySelector('.nav-list .cursor').textContent = data.name;
-                loadProjects(email); // ✅ Now fetch projects after name loads
+                    document.querySelector('.nav-list .cursor').textContent = data.name;
                 } else {
-                console.error('Failed to load user name:', data.message);
+                    console.error('Name error:', data.message);
                 }
             })
-            .catch(error => console.error('Error fetching user name:', error));
+            .catch(err => console.error('Fetch name error:', err));
         }
-
+    
         function loadProjects(email) {
             fetch('backend/get_projects_by_email.php', {
                 method: 'POST',
@@ -118,31 +110,41 @@
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                const dropdownMenu = document.querySelector('.dropdown-menu');
-                dropdownMenu.innerHTML = ''; // Clear existing
-
-                // Inject projects
-                data.projects.forEach(project => {
-                    const a = document.createElement('a');
-                    a.href = `project.html?id=${project.id}`;
-                    a.textContent = project.name;
-                    dropdownMenu.appendChild(a);
-                });
-
-                // Optionally add "Create New"
-                const createNew = document.createElement('a');
-                createNew.href = 'create_project.html';
-                createNew.textContent = 'Create New';
-                dropdownMenu.appendChild(createNew);
-
+                    const dropdownMenu = document.querySelector('.dropdown-menu');
+                    dropdownMenu.innerHTML = ''; // Clear old content
+    
+                    data.projects.forEach(project => {
+                        const link = document.createElement('a');
+                        link.href = `project.html?id=${project.id}&email=${email}`;
+                        link.textContent = project.name;
+                        dropdownMenu.appendChild(link);
+                    });
+    
+                    // Add Create New
+                    const createLink = document.createElement('a');
+                    createLink.href = `create_project.html?email=${email}`;
+                    createLink.textContent = 'Create New';
+                    dropdownMenu.appendChild(createLink);
                 } else {
-                console.error('No projects:', data.message);
+                    console.error('Project error:', data.message);
                 }
             })
-            .catch(error => console.error('Error fetching projects:', error));
+            .catch(err => console.error('Fetch project error:', err));
         }
-
-
+    
+        const dropdown = document.querySelector('.dropdown');
+        const toggle = dropdown.querySelector('.dropdown-toggle');
+    
+        toggle.addEventListener('click', () => {
+            dropdown.classList.toggle('open');
+        });
+    
+        function confirmLogout() {
+            if (confirm("Do you want to log out?")) {
+                window.location.href = 'homepage.html';
+            }
+        }
     </script>
+    
 </body>
 </html>
