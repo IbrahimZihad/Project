@@ -131,27 +131,36 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email })
             })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+                return res.json();
+            })
             .then(data => {
-                if (data.success) {
+                if (data.success && Array.isArray(data.projects)) {
                     const dropdownMenu = document.querySelector('.dropdown-menu');
                     const projectList = document.getElementById('projectList');
                     dropdownMenu.innerHTML = '';
                     projectList.innerHTML = '';
-
-                    data.projects.forEach(project => {
-                        const link = document.createElement('a');
-                        link.href = `project.html?id=${project.id}&email=${email}`;
-                        link.textContent = project.name;
-                        dropdownMenu.appendChild(link);
-
-                        const item = document.createElement('div');
-                        item.className = 'p-4 border rounded shadow bg-white hover:bg-gray-50';
-                        item.innerHTML = `<a href="project.html?id=${project.id}&email=${email}" class="text-lg font-medium text-blue-600">${project.name}</a>`;
-                        projectList.appendChild(item);
-                    });
+        
+                    if (data.projects.length === 0) {
+                        projectList.innerHTML = '<p class="text-gray-500">No projects found.</p>';
+                    } else {
+                        data.projects.forEach(project => {
+                            const link = document.createElement('a');
+                            link.href = `project.html?id=${project.id}&email=${email}`;
+                            link.textContent = project.name;
+                            dropdownMenu.appendChild(link);
+        
+                            const item = document.createElement('div');
+                            item.className = 'p-4 border rounded shadow bg-white hover:bg-gray-50';
+                            item.innerHTML = `<a href="project.html?id=${project.id}&email=${email}" class="text-lg font-medium text-blue-600">${project.name}</a>`;
+                            projectList.appendChild(item);
+                        });
+                    }
                 } else {
-                    console.error('Project error:', data.message);
+                    console.error('Project error:', data.message || 'Invalid response format');
                 }
             })
             .catch(err => console.error('Fetch project error:', err));
