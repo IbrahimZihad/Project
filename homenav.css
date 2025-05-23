@@ -125,7 +125,7 @@ body {
 }
 
 #p1 {
-    font-family: cursive;
+    font-family: Arial, sans-serif;
     font-size: 64px;
     text-align: center;
     font-weight: normal;
@@ -163,7 +163,7 @@ body {
 #motivation li {
     text-decoration: none;
     list-style: none;
-    font-family: cursive;
+    font-family: Arial, sans-serif;
     font-size: 60px;
     color: #E81140;
 }
