@@ -11,9 +11,9 @@ if ($sprint_id) {
     $stmt = $conn->prepare("SELECT * FROM tasks WHERE project_id = ?");
     $stmt->bind_param("i", $project_id);
 }
-
 $stmt->execute();
 $result = $stmt->get_result();
+
 $tasks = [];
 while ($row = $result->fetch_assoc()) {
     $tasks[] = $row;

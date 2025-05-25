@@ -12,7 +12,7 @@
   <div class="bg-gray-300 flex justify-between items-center p-4">
     <div class="text-xl font-semibold">Projects</div>
     <div class="flex gap-6">
-      <a href="#">Projects</a>
+      <a href="">Projects</a>
       <a href="#">Product Guide</a>
       <a href="#">About</a>
     </div>
@@ -40,14 +40,28 @@
           <h2 class="text-xl font-semibold">Projects / <span id="projectName">Loading...</span></h2>
           <select id="sprintFilter" class="mt-2 border px-2 py-1"></select>
         </div>
-        <button onclick="openTaskModal()" class="bg-cyan-700 text-white px-4 py-2 rounded">+ Task</button>
       </div>
 
       <!-- Task Columns -->
       <div class="grid grid-cols-3 gap-4">
-        <div><h3 class="text-center font-semibold">To Do</h3><div id="todoColumn" class="bg-rose-200 min-h-[300px] p-2 rounded"></div></div>
-        <div><h3 class="text-center font-semibold">In Progress</h3><div id="inProgressColumn" class="bg-rose-200 min-h-[300px] p-2 rounded"></div></div>
-        <div><h3 class="text-center font-semibold">Done</h3><div id="doneColumn" class="bg-rose-200 min-h-[300px] p-2 rounded"></div></div>
+        <!-- To Do -->
+        <div>
+          <h3 class="text-center font-semibold">To Do</h3>
+          <div id="todoColumn" class="bg-rose-200 min-h-[300px] p-2 rounded mb-2"></div>
+          <button onclick="openTaskModal('To Do')" class="w-full bg-blue-500 text-white px-4 py-2 rounded">+ Create Task</button>
+        </div>
+        <!-- In Progress -->
+        <div>
+          <h3 class="text-center font-semibold">In Progress</h3>
+          <div id="inProgressColumn" class="bg-rose-200 min-h-[300px] p-2 rounded mb-2"></div>
+          <button onclick="openTaskModal('In Progress')" class="w-full bg-yellow-500 text-white px-4 py-2 rounded">+ Create Task</button>
+        </div>
+        <!-- Done -->
+        <div>
+          <h3 class="text-center font-semibold">Done</h3>
+          <div id="doneColumn" class="bg-rose-200 min-h-[300px] p-2 rounded mb-2"></div>
+          <button onclick="openTaskModal('Done')" class="w-full bg-green-500 text-white px-4 py-2 rounded">+ Create Task</button>
+        </div>
       </div>
     </div>
   </div>
@@ -58,18 +72,26 @@
       <h2 class="text-xl font-bold mb-4">Create Task</h2>
       <input type="text" id="taskTitle" placeholder="Task Title" class="w-full border p-2 mb-3">
       <textarea id="taskDesc" placeholder="Task Description" class="w-full border p-2 mb-3"></textarea>
+      <input type="hidden" id="taskStatus" value="To Do">
       <button onclick="createTask()" class="bg-green-500 text-white px-4 py-2 rounded">Create</button>
       <button onclick="closeTaskModal()" class="bg-red-500 text-white px-4 py-2 rounded ml-2">Cancel</button>
     </div>
   </div>
 
   <script>
-    const projectId = new URLSearchParams(window.location.search).get("id");
+    const urlParams = new URLSearchParams(window.location.search);
+    const projectId = urlParams.get("id");
+    const email = urlParams.get("email");
+
+    if (!projectId || !email) {
+      alert("Missing project ID or email. Redirecting...");
+      window.location.href = "dashboard.html";
+    }
 
     async function fetchProject() {
       const res = await fetch("backend/get_project_by_id.php", {
         method: "POST",
-        headers: {'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: projectId })
       });
       const data = await res.json();
@@ -114,8 +136,9 @@
       });
     }
 
-    function openTaskModal() {
+    function openTaskModal(status = 'To Do') {
       document.getElementById("taskModal").classList.remove("hidden");
+      document.getElementById("taskStatus").value = status;
     }
 
     function closeTaskModal() {
@@ -125,22 +148,35 @@
     }
 
     async function createTask() {
-      const title = document.getElementById("taskTitle").value;
-      const description = document.getElementById("taskDesc").value;
+      const title = document.getElementById("taskTitle").value.trim();
+      const description = document.getElementById("taskDesc").value.trim();
       const sprintId = document.getElementById("sprintFilter").value;
+      const status = document.getElementById("taskStatus").value;
+
+      if (!title) {
+        alert("Title is required.");
+        return;
+      }
+
       const res = await fetch("backend/create_task.php", {
         method: "POST",
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
-          title, description, sprint_id: sprintId || null, project_id: projectId
+          title,
+          description,
+          sprint_id: sprintId || null,
+          project_id: projectId,
+          email: email,
+          status: status
         })
       });
+
       const data = await res.json();
       if (data.success) {
         closeTaskModal();
         loadTasks();
       } else {
-        alert("Failed to create task");
+        alert("Task creation failed: " + (data.message || 'Unknown error'));
       }
     }
 
