@@ -128,7 +128,7 @@ body {
 }
 
 #p1 {
-    font-family: cursive;
+    font-family: Arial, sans-serif;
     font-size: 64px;
     text-align: center;
     font-weight: normal;
@@ -166,7 +166,7 @@ body {
 #motivation li {
     text-decoration: none;
     list-style: none;
-    font-family: cursive;
+    font-family: Arial, sans-serif;
     font-size: 60px;
     color: #E81140;
 }
@@ -216,8 +216,10 @@ body {
   }
 
   .footer2 a:hover {
-    color: #ffa1a1;
-  }
+    color: #f5f2f2;
+    font-weight: bolder;
+    font-size: 20px;
+}
   
   .footer3 {
     background-color: #6e6e6e; 

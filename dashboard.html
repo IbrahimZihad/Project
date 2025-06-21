@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <navbar class="navbar">
+        <ul class="nav-list">
+            <p class="logo">
+                Task Manager
+            </p>
+        </ul>
+        <ul class="nav-list">
+            <li><a href="/" aria-current="page">Projects</a></li>
+            <li><a href="/">Product Guide</a></li>
+            <li><a href="/">About</a></li>
+        </ul>
+        <ul class="nav-list" onclick="confirmLogout()">
+            <p class="cursor">Loading...</p> 
+        </ul>
+    </navbar>
+    <div class="main">
+        <div class="sidebar">
+          
+            <div class="dropdown">
+              <div class="dropdown-toggle">Projects ▼</div>
+              <div class="dropdown-menu">
+                <a href="#">All Projects</a>
+              </div>
+            </div>
+          
+            <div class="menu-item">Team</div>
+        </div>
+        <div class="right p-6">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-2xl font-semibold">My Projects</h2>
+              <button onclick="toggleCreateModal(true)" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                + Create New
+              </button>
+            </div>
+            <!-- Create New Project Modal -->
+            <div id="createProjectModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                <div class="bg-white p-6 rounded shadow w-96">
+                <h2 class="text-xl font-bold mb-4">Create New Project</h2>
+                
+                <label class="block mb-1 text-sm">Project Name</label>
+                <input id="projectNameInput" type="text" class="w-full border p-2 mb-4" placeholder="Enter project name">
+                
+                <div class="flex justify-end gap-2">
+                    <button onclick="createProject()" class="bg-green-500 text-white px-4 py-2 rounded">Create</button>
+                    <button onclick="toggleCreateModal(false)" class="bg-red-500 text-white px-4 py-2 rounded">Cancel</button>
+                </div>
+                </div>
+            </div>
+              
+            <div id="projectList" class="grid gap-4">
+              <!-- Projects will be inserted here -->
+            </div>
+        </div>
+          
+    </div>
+    <div class="footer">
+        <div class="footer1">
+            <p style="font-family: cursive; font-size: 60px; color: white; margin-left: 50px;">Task Manager</p>
+            <p style="font-family: cursive;color: white; margin-left: 50px;">Task Manager is a project management and issue tracking website that helps teams plan, track, and manage work.  Limited is a leading home service company in Bangladesh which is working for democratizing digital lifestyle across the country.</p>
+        </div>
+        <div class="footer2">
+            <p><a href="/">Projects</a></p>
+            <p><a href="/">Product Guide</a></p>
+            <p><a href="/">About</a></p>
+        </div>
+        <div class="footer3">
+            <p>
+
+                 House #08, Road #10, Stadium Road, 
+
+
+            </p>
+            <p>
+                Mirpur, Dhaka, Bangladesh
+            </p>
+            <p>
+                +88 01328911249
+            </p>
+            <p>
+                task_manager1@gmail.com
+            </p>
+        </div>
+    </div>
+    <script>
+        let email = '';
+
+        window.onload = () => {
+            const params = new URLSearchParams(window.location.search);
+            email = params.get('email');
+
+            if (!email) {
+                alert("No email found. Redirecting to login.");
+                window.location.href = 'homepage.html';
+                return;
+            }
+
+            loadUserName(email);
+            loadProjects(email);
+        };
+
+        function loadUserName(email) {
+            fetch('backend/get_user_by_email.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    document.querySelector('.nav-list .cursor').textContent = data.name;
+                } else {
+                    console.error('Name error:', data.message);
+                }
+            })
+            .catch(err => console.error('Fetch name error:', err));
+        }
+
+        function loadProjects(email) {
+            fetch('backend/get_projects_by_email.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const dropdownMenu = document.querySelector('.dropdown-menu');
+                    const projectList = document.getElementById('projectList');
+                    dropdownMenu.innerHTML = '';
+                    projectList.innerHTML = '';
+
+                    data.projects.forEach(project => {
+                        // Dropdown link
+                        const link = document.createElement('a');
+                        link.href = `project.html?id=${project.id}&email=${email}`;
+                        link.textContent = project.name;
+                        dropdownMenu.appendChild(link);
+
+                        // Main project card with delete button
+                        const item = document.createElement('div');
+                        item.className = 'p-4 border rounded shadow bg-white hover:bg-gray-50 flex justify-between items-center';
+
+                        const nameLink = document.createElement('a');
+                        nameLink.href = `project.html?id=${project.id}&email=${email}`;
+                        nameLink.className = 'text-lg font-medium text-blue-600';
+                        nameLink.textContent = project.name;
+
+                        const deleteBtn = document.createElement('button');
+                        deleteBtn.textContent = 'Delete';
+                        deleteBtn.className = 'bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600';
+                        deleteBtn.onclick = () => deleteProject(project.id);
+
+                        item.appendChild(nameLink);
+                        item.appendChild(deleteBtn);
+                        projectList.appendChild(item);
+                    });
+                } else {
+                    console.error('Project error:', data.message);
+                }
+            })
+            .catch(err => console.error('Fetch project error:', err));
+        }
+
+
+        function deleteProject(projectId) {
+            if (!confirm("Are you sure you want to delete this project?")) return;
+
+            fetch('backend/delete_project.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: projectId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Project deleted successfully');
+                    loadProjects(email);
+                } else {
+                    alert('Delete failed: ' + data.message);
+                }
+            })
+            .catch(err => console.error('Delete error:', err));
+        }
+
+
+
+        function toggleCreateModal(show) {
+            const modal = document.getElementById('createProjectModal');
+            if (show) {
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+                document.getElementById('projectNameInput').value = '';
+            }
+        }
+
+        function createProject() {
+            const name = document.getElementById('projectNameInput').value.trim();
+            if (!name) {
+                alert('Project name is required');
+                return;
+            }
+
+            fetch('backend/create_project.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: name, email: email })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Project created successfully');
+                    toggleCreateModal(false);
+                    loadProjects(email);
+                } else {
+                    alert('Failed: ' + data.message);
+                }
+            })
+            .catch(err => console.error('Project creation error:', err));
+        }
+
+        const dropdown = document.querySelector('.dropdown');
+        const toggle = dropdown.querySelector('.dropdown-toggle');
+
+        toggle.addEventListener('click', () => {
+            dropdown.classList.toggle('open');
+        });
+
+        function confirmLogout() {
+            if (confirm("Do you want to log out?")) {
+                window.location.href = 'homepage.html';
+            }
+        }
+    </script>
+    
+</body>
+</html>
