@@ -36,11 +36,8 @@
 
         <div class="right p-6">
             <div class="flex items-center justify-between px-6 py-4 border-b">
-                <!-- Left Section -->
                 <div class="flex items-center space-x-6">
                     <div class="text-sm text-gray-600">Projects / <span class="font-medium">Pothik</span></div>
-
-                    <!-- Dropdown -->
                     <div class="relative">
                         <button class="flex items-center px-3 py-1 border rounded-md text-sm text-gray-700 hover:bg-gray-100">
                             All Sprints
@@ -49,8 +46,6 @@
                             </svg>
                         </button>
                     </div>
-
-                    <!-- Navigation Links -->
                     <div class="flex space-x-4">
                         <a href="#" class="text-sm underline text-gray-700 hover:text-blue-600">Board</a>
                         <a href="#" class="text-sm underline text-gray-700 hover:text-blue-600">Backlog</a>
@@ -58,8 +53,6 @@
                         <a href="#" class="text-sm underline text-gray-700 hover:text-blue-600">Team</a>
                     </div>
                 </div>
-
-                <!-- Right Section -->
                 <div>
                     <button class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-1.5 rounded-md text-sm">
                         Share
@@ -67,12 +60,10 @@
                 </div>
             </div>
 
-            <!-- Below Header Project Title -->
             <div class="px-6 py-3 text-sm text-gray-800">
                 My Scrum Project ....
             </div>
 
-            <!-- Create Sprint Button -->
             <div class="px-6 py-3">
                 <button onclick="createSprint()" 
                     class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm">
@@ -80,7 +71,6 @@
                 </button>
             </div>
 
-            <!-- Sprint Container -->
             <div id="sprintContainer" class="mx-6 my-4 space-y-4">
                 <!-- Sprints will be dynamically added here -->
             </div>
@@ -113,8 +103,7 @@
         const projectId = urlParams.get('id');
         const email = urlParams.get('email');
 
-        // Load project and user name
-        fetch(`get_project_and_user.php?id=${projectId}&email=${email}`)
+        fetch(`backend/get_project_and_user.php?id=${projectId}&email=${email}`)
             .then(res => res.json())
             .then(data => {
                 document.querySelector('.text-xl.font-bold').textContent = data.project_name;
@@ -127,7 +116,7 @@
             const startDate = prompt("Enter start date (YYYY-MM-DD):");
             const endDate = prompt("Enter end date (YYYY-MM-DD):");
 
-            fetch("create_sprint.php", {
+            fetch("backend/create_sprint.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -138,9 +127,8 @@
                 })
             })
             .then(res => res.json())
-            .then(data => {
-                const sprintId = data.sprint_id;
-                addSprintToDOM(sprintName, startDate, endDate, sprintId);
+            .then(() => {
+                loadSprints(); // Refresh after sprint creation
             });
         }
 
@@ -190,7 +178,7 @@
         function createIssue(sprintId) {
             const title = prompt("Issue title:");
             const description = prompt("Issue description:");
-            fetch("create_issue.php", {
+            fetch("backend/create_issue.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -198,12 +186,13 @@
                     sprint_id: sprintId,
                     title,
                     description,
-                    created_by: 1 // Replace with real user_id from session if needed
+                    created_by: 1 // Replace with real user_id if needed
                 })
             })
             .then(res => res.json())
             .then(data => {
                 alert("Issue Created with ID: " + data.task_id);
+                loadSprints(); // Refresh after issue creation
             });
         }
 
@@ -215,7 +204,7 @@
 
             if (!newStart || !newEnd) return;
 
-            fetch("update_sprint_dates.php", {
+            fetch("backend/update_sprint_dates.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ sprint_id: sprintId, start_date: newStart, end_date: newEnd })
@@ -223,12 +212,27 @@
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    span.textContent = `${newStart}–${newEnd}`;
+                    loadSprints(); // Refresh after editing dates
                 } else {
                     alert("Failed to update sprint dates.");
                 }
             });
         }
+
+        function loadSprints() {
+            fetch(`backend/get_sprints.php?project_id=${projectId}`)
+                .then(res => res.json())
+                .then(data => {
+                    const container = document.getElementById('sprintContainer');
+                    container.innerHTML = '';
+                    data.forEach(sprint => {
+                        addSprintToDOM(sprint.sprint_name, sprint.start_date, sprint.end_date, sprint.sprint_id);
+                    });
+                });
+        }
+
+        // Load sprints on initial page load
+        loadSprints();
     </script>
 </body>
 </html>
