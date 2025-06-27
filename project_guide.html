@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Jira-style Sidebar</title>
+    <link rel="stylesheet" href="project_guide.css">
+   
+</head>
+
+<body>
+    <div>
+        <navbar class="navbar">
+            <ul class="nav-list">
+                <p class="logo">Task Manager</p>
+            </ul>
+            <ul class="nav-list">
+                <li><a href="/homepage.html">Home</a></li>
+                <li><a href="/project_guide.html">Product Guide</a></li>
+                <li><a href="/about.html">About</a></li>
+            </ul>
+            <ul class="nav-list">
+                <button id="login-btn" onclick="location.href='login.html'">Login</button>
+            </ul>
+        </navbar>
+
+        <div class="container">
+            <aside class="sidebar">
+                <h2>Guide</h2>
+                <ul>
+                    <li onclick="showContent('getting-started')">Getting Started</li>
+                    <li onclick="showContent('projects')">Projects</li>
+                    <li onclick="showContent('boards')">Boards</li>
+                    <li onclick="showContent('issues')">Work Items/Issues</li>
+                    <li onclick="showContent('workflow')">Workflows</li>
+                    <li onclick="showContent('integration')">Integrations</li>
+                </ul>
+            </aside>
+
+            <main class="content">
+                <div id="getting-started" class="content-box active">
+                    <h1>Welcome to Task Manager</h1>
+                    <p>
+                    Everything you’ll need to know
+                    Whether you've used it in a past life, or have never heard of it, we'll help you navigate choosing the right product,
+                    setting it up, and learning the best practices. So grabyour team and let's go! 
+                    </p>
+                    <br>
+                    <br>
+
+                    <h1>What is Task Manger?</h1>
+                    <p>Task Manager is the #1 agile project management tool used by teams to plan, track, release and support world-class software with
+                    confidence. It is the single source of truth for your entire development lifecycle, empowering autonomous teams with the
+                    context to move quickly while staying connected to the greater business goal. Whether used to manage simple projects or
+                    to power your DevOps practices, makes it easy for teams to move work forward, stay aligned, and communicate in context.
+                    Sign upfor a live demo of Task Manger.</p>
+                </div>
+                <div id="projects" class="content-box">
+                    <h1>Projects</h1>
+                    <br>
+                    <h3>What is a Task Manager project?</h3>
+                    <p>
+                    There is no one-size fits all approach to structuring a project in Task Manager. However, it may be helpful to recognize that
+                    Task Manager projects are not intended to be bespoke or unique to a single outcome. Rather, they capture ongoing efforts. With
+                    that in mind, here are a few approaches you may want to consider when thinking about how to structure your project in
+                    Task Manager:
+                    
+                    By team - Team-based projects are another common organizational model. This allows your work to mirror your social
+                    organization and is convenient in less cross-functional setups, as it allows for more straight forward project
+                    permission management.
+                    By business unit - You may want to organize around larger business units such as marketing, IT, etc. Types of work will
+                    likely fall into similar patterns, making setting up workflows - and issue types particularly - more convenient.
+                    By product - If you're a software development team looking to make heavy use of the Task Manager release and versioning system,
+                    you'll want to give strong consideration to organizing your projects by releasable product or groups of work that share
+                    a common release cycle.
+                    Even within these categories, you can get as granular or as broad as you want. For example, if you structure by product,
+                    you can continue to sub-categorize by specific features.</p>
+                </div>
+                <div id="boards" class="content-box">
+                    <h1>Jira boards introduction</h1>
+                    <br>
+                    <h3>What is a Task Manager board?</h3>
+                    <p>
+                    If agile is an iterative approach to project management and software development, then an agile board is a tool that
+                    helps teams plan, visualize, and manage that work. In Jira, the board displays a selection of work items in columns,
+                    with each column representing a step in your team’s workflow for taking work through completion. A board accompanies
+                    each Task Manager project by default and provides the team with a shared view of all work that hasn't started, work that is in
+                    progress, and work that is completed.
+                    
+                    Your board can be found in the sidebar navigation under “Board”.</p>
+                </div>
+                <div id="issues" class="content-box">
+                    <h1>Task Manager work items overview</h1>
+                    <br>
+                    <h3>What is a work item?</h3>
+                    <p>
+                    In Task Manager, teams use work items (formerly known as issues) to track bugs and individual pieces of work that must be
+                    completed. Depending on how your team uses Jira, a work item could represent a project task, a helpdesk ticket, a leave
+                    request form, etc. In Task Manager, work items typically represent individual work items such as big features, user
+                    requirements, and software bugs. You can update work items to show work progress or add relevant information such as who
+                    is assigned to the work, in-depth description, or attachments.</p>
+                </div>
+                <div id="workflow" class="content-box">
+                    <h1>Task Manager workflows overview</h1>
+                    <br>
+                    <h3>What is a Task Manager workflow?</h3>
+                    <p>
+                    In Task Manager, the path your work items take from creation to completion is called workflow. Each workflow is composed of a
+                    set of statuses and transitions that your work item moves through during its lifecycle and typically represents work
+                    processes within your organization.
+                    
+                    A Task Manager workflow represents the process your team uses to take a work item from creation to completion. The illustration
+                    below is an example workflow:
+                        </p>
+                </div>
+                <div id="integration" class="content-box">
+                    <h1>Integrations with Task Manager overview
+                    </h1>
+                    <h3>What is a Task Manager app?</h3>
+                    <br>
+                    <p>
+                    In Task Manager, an app (sometimes called an add-on or plugin) is an installable component that supplements or enhances the
+                    functionality of your instance. You and your teams can spend less time managing work and more time building great
+                    software with over 3,000 Jira apps that can be custom-tailored to fit any and every use case. On average, software
+                    developers check 3.3 tools simply to discover the status of a project, while Jira customers rely on fewer tools (2.3
+                    tools), saving valuable time, andincreasing productivity.</p>
+                </div>
+            </main>
+        </div>
+
+        <script>
+            function showContent(id) {
+                const contentBoxes = document.querySelectorAll('.content-box');
+                contentBoxes.forEach(box => box.classList.remove('active'));
+                document.getElementById(id).classList.add('active');
+            }
+        </script>
+
+        <div class="footer">
+            <div class="footer1">
+                <p style="font-family: cursive; font-size: 60px; color: white; margin-left: 50px;">Task Manager</p>
+                <p style="font-family: cursive; color: white; margin-left: 50px;">Pani is a project management and issue
+                    tracking website that helps teams plan, track, and manage work. Limited is a leading home service
+                    company in Bangladesh which is working for democratizing digital lifestyle across the country.</p>
+            </div>
+            <div class="footer2">
+                <p style="position: relative; top: 180px;"><a href="/">Home</a></p>
+                <p style="position: relative; top: 180px;"><a href="/">Product Guide</a></p>
+                <p style="position: relative; top: 180px;"><a href="/">About</a></p>
+            </div>
+            <div class="footer3">
+                <p>House #08, Road #10, Stadium Road,</p>
+                <p>Mirpur, Dhaka, Bangladesh</p>
+                <p>+88 01328911249</p>
+                <p>task_manager1@gmail.com</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
