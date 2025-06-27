@@ -13,9 +13,9 @@
             <p class="logo">Task Manager</p>
         </ul>
         <ul class="nav-list">
-            <li><a href="/" aria-current="page">Projects</a></li>
-            <li><a href="/">Product Guide</a></li>
-            <li><a href="/">About</a></li>
+            <li><a href="homepage.html?email=${email}">Projects</a></li>
+            <li><a href="guide.html?email=${email}&id=${projectId}">Product Guide</a></li>
+            <li><a href="about.html?email=${email}&id=${projectId}">About</a></li>
         </ul>
         <ul class="nav-list" onclick="confirmLogout()">
             <p class="cursor">Loading...</p> 
@@ -27,10 +27,10 @@
             <h2 class="text-xl font-bold mb-4">Pothik</h2>
             <div class="text-sm">Planning</div>
             <ul class="space-y-2 mt-4">
-                <li><a href="#" class="block">📋 Board</a></li>
-                <li><a href="#" class="block">🔍 Backlog</a></li>
-                <li><a href="#" class="block">📑 Summary</a></li>
-                <li><a href="#" class="block">👥 Team</a></li>
+                <li><a href="board.html?id=${projectId}&email=${email}" class="block">📋 Board</a></li>
+                <li><a href="backlog.html?id=${projectId}&email=${email}" class="block">🔍 Backlog</a></li>
+                <li><a href="summary.html?id=${projectId}&email=${email}" class="block">📑 Summary</a></li>
+                <li><a href="team.html?id=${projectId}&email=${email}" class="block">👥 Team</a></li>
             </ul>
         </div>
 
@@ -47,10 +47,10 @@
                         </button>
                     </div>
                     <div class="flex space-x-4">
-                        <a href="#" class="text-sm underline text-gray-700 hover:text-blue-600">Board</a>
-                        <a href="#" class="text-sm underline text-gray-700 hover:text-blue-600">Backlog</a>
-                        <a href="#" class="text-sm underline text-gray-700 hover:text-blue-600">Summary</a>
-                        <a href="#" class="text-sm underline text-gray-700 hover:text-blue-600">Team</a>
+                        <a href="board.html?id=${projectId}&email=${email}" class="text-sm underline text-gray-700 hover:text-blue-600">Board</a>
+                        <a href="backlog.html?id=${projectId}&email=${email}" class="text-sm underline text-gray-700 hover:text-blue-600">Backlog</a>
+                        <a href="summary.html?id=${projectId}&email=${email}" class="text-sm underline text-gray-700 hover:text-blue-600">Summary</a>
+                        <a href="team.html?id=${projectId}&email=${email}" class="text-sm underline text-gray-700 hover:text-blue-600">Team</a>
                     </div>
                 </div>
                 <div>
@@ -77,44 +77,27 @@
         </div>
     </div>
 
-    <div class="footer">
-        <div class="footer1">
-            <p style="font-family: cursive; font-size: 60px; color: white; margin-left: 50px;">Task Manager</p>
-            <p style="font-family: cursive;color: white; margin-left: 50px;">
-                Task Manager is a project management and issue tracking website that helps teams plan, track, and manage work. Limited is a leading home service company in Bangladesh which is working for democratizing digital lifestyle across the country.
-            </p>
-        </div>
-        <div class="footer2">
-            <p><a href="/">Projects</a></p>
-            <p><a href="/">Product Guide</a></p>
-            <p><a href="/">About</a></p>
-        </div>
-        <div class="footer3">
-            <p>House #08, Road #10, Stadium Road,</p>
-            <p>Mirpur, Dhaka, Bangladesh</p>
-            <p>+88 01328911249</p>
-            <p>task_manager1@gmail.com</p>
-        </div>
-    </div>
-
-    <!-- Script Section -->
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const projectId = urlParams.get('id');
         const email = urlParams.get('email');
 
-        fetch(`backend/get_project_and_user.php?id=${projectId}&email=${email}`)
-            .then(res => res.json())
-            .then(data => {
-                document.querySelector('.text-xl.font-bold').textContent = data.project_name;
-                document.querySelector('.cursor').textContent = data.user_name;
-                document.querySelector('.font-medium').textContent = data.project_name;
-            });
+        function fetchData() {
+            fetch(`backend/get_project_and_user.php?id=${projectId}&email=${email}`)
+                .then(res => res.json())
+                .then(data => {
+                    document.querySelector('.text-xl.font-bold').textContent = data.project_name;
+                    document.querySelector('.cursor').textContent = data.user_name;
+                    document.querySelector('.font-medium').textContent = data.project_name;
+                });
+        }
 
         function createSprint() {
             const sprintName = prompt("Enter sprint name:");
             const startDate = prompt("Enter start date (YYYY-MM-DD):");
             const endDate = prompt("Enter end date (YYYY-MM-DD):");
+
+            if (!sprintName || !startDate || !endDate) return;
 
             fetch("backend/create_sprint.php", {
                 method: "POST",
@@ -127,9 +110,7 @@
                 })
             })
             .then(res => res.json())
-            .then(() => {
-                loadSprints(); // Refresh after sprint creation
-            });
+            .then(() => loadSprints());
         }
 
         function addSprintToDOM(name, start, end, sprintId) {
@@ -141,27 +122,14 @@
                 <div class="flex items-center justify-between bg-gray-100 px-4 py-2 border-b">
                     <div class="flex items-center space-x-3">
                         <input type="checkbox" class="w-4 h-4">
-                        <button class="flex items-center text-sm font-semibold text-gray-800 hover:text-blue-600">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
-                            </svg>
+                        <span class="flex items-center text-sm font-semibold text-gray-800">
                             ${name}
-                        </button>
+                        </span>
                         <span class="text-sm text-gray-600 cursor-pointer" 
-                              onclick="editSprintDates(this, ${sprintId})" 
-                              data-sprint-id="${sprintId}">
+                              onclick="editSprintDates(this, ${sprintId})">
                             ${start}–${end}
                         </span>
                         <span class="text-sm text-gray-600">(0 issue)</span>
-                    </div>
-                    <button onclick="this.closest('div.border.rounded-md').remove()" 
-                            class="text-red-600 hover:text-red-800 text-sm">❌ Delete</button>
-                </div>
-                <div class="flex items-center justify-between px-4 py-2 border-b hover:bg-gray-50">
-                    <div class="text-sm text-gray-800">${name}-Issue-1</div>
-                    <div class="flex items-center space-x-4">
-                        <span class="text-xs border px-2 py-0.5 rounded-md text-gray-600 bg-gray-50">To Do</span>
                     </div>
                 </div>
                 <div class="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer" 
@@ -175,25 +143,16 @@
             container.appendChild(sprintDiv);
         }
 
-        function createIssue(sprintId) {
-            const title = prompt("Issue title:");
-            const description = prompt("Issue description:");
-            fetch("backend/create_issue.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    project_id: projectId,
-                    sprint_id: sprintId,
-                    title,
-                    description,
-                    created_by: 1 // Replace with real user_id if needed
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                alert("Issue Created with ID: " + data.task_id);
-                loadSprints(); // Refresh after issue creation
-            });
+        function loadSprints() {
+            fetch(`backend/get_sprints.php?project_id=${projectId}`)
+                .then(res => res.json())
+                .then(data => {
+                    const container = document.getElementById('sprintContainer');
+                    container.innerHTML = '';
+                    data.forEach(sprint => {
+                        addSprintToDOM(sprint.sprint_name, sprint.start_date, sprint.end_date, sprint.sprint_id);
+                    });
+                });
         }
 
         function editSprintDates(span, sprintId) {
@@ -212,26 +171,42 @@
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    loadSprints(); // Refresh after editing dates
+                    loadSprints();
                 } else {
                     alert("Failed to update sprint dates.");
                 }
             });
         }
 
-        function loadSprints() {
-            fetch(`backend/get_sprints.php?project_id=${projectId}`)
-                .then(res => res.json())
-                .then(data => {
-                    const container = document.getElementById('sprintContainer');
-                    container.innerHTML = '';
-                    data.forEach(sprint => {
-                        addSprintToDOM(sprint.sprint_name, sprint.start_date, sprint.end_date, sprint.sprint_id);
-                    });
-                });
+        function createIssue(sprintId) {
+            const title = prompt("Issue title:");
+            const description = prompt("Issue description:");
+
+            fetch("backend/create_issue.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    project_id: projectId,
+                    sprint_id: sprintId,
+                    title,
+                    description,
+                    created_by: 1
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert("Issue Created with ID: " + data.task_id);
+                loadSprints();
+            });
         }
 
-        // Load sprints on initial page load
+        function confirmLogout() {
+            if (confirm("Do you want to log out?")) {
+                window.location.href = 'homepage.html';
+            }
+        }
+
+        fetchData();
         loadSprints();
     </script>
 </body>
