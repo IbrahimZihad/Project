@@ -148,37 +148,44 @@
     }
 
     async function createTask() {
-      const title = document.getElementById("taskTitle").value.trim();
-      const description = document.getElementById("taskDesc").value.trim();
-      const sprintId = document.getElementById("sprintFilter").value;
-      const status = document.getElementById("taskStatus").value;
+    const title = document.getElementById("taskTitle").value.trim();
+    const description = document.getElementById("taskDesc").value.trim();
+    const sprintId = document.getElementById("sprintFilter").value;
+    const status = document.getElementById("taskStatus").value;
 
-      if (!title) {
+    if (!title) {
         alert("Title is required.");
         return;
-      }
+    }
 
-      const res = await fetch("backend/create_task.php", {
+    try {
+        const res = await fetch("backend/create_task.php", {
         method: "POST",
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
-          title,
-          description,
-          sprint_id: sprintId || null,
-          project_id: projectId,
-          email: email,
-          status: status
+            title,
+            description,
+            sprint_id: sprintId || null,
+            project_id: projectId,
+            email: email,
+            status: status || "To Do"
         })
-      });
+        });
 
-      const data = await res.json();
-      if (data.success) {
+        const data = await res.json();
+
+        if (data.success) {
         closeTaskModal();
-        loadTasks();
-      } else {
-        alert("Task creation failed: " + (data.message || 'Unknown error'));
-      }
+        await loadTasks();  // <-- ensure this is awaited!
+        } else {
+        alert("Task creation failed: " + (data.message || "Unknown error"));
+        }
+    } catch (err) {
+        console.error("Task creation error:", err);
+        alert("Task creation error: " + err.message);
     }
+    }
+
 
     window.onload = async () => {
       await fetchProject();

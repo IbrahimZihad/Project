@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <navbar class="navbar">
+        <ul class="nav-list">
+            <p class="logo">Task Manager</p>
+        </ul>
+        <ul class="nav-list">
+            <li><a href="/" aria-current="page">Projects</a></li>
+            <li><a href="/">Product Guide</a></li>
+            <li><a href="/">About</a></li>
+        </ul>
+        <ul class="nav-list" onclick="confirmLogout()">
+            <p class="cursor">Loading...</p> 
+        </ul>
+    </navbar>
+
+    <div class="main">
+        <div class="sidebar">
+            <h2 class="text-xl font-bold mb-4">Pothik</h2>
+            <div class="text-sm">Planning</div>
+            <ul class="space-y-2 mt-4">
+                <li><a href="#" class="block">📋 Board</a></li>
+                <li><a href="#" class="block">🔍 Backlog</a></li>
+                <li><a href="#" class="block">📑 Summary</a></li>
+                <li><a href="#" class="block">👥 Team</a></li>
+            </ul>
+        </div>
+
+        <div class="right p-6">
+            <div class="flex items-center justify-between px-6 py-4 border-b">
+                <!-- Left Section -->
+                <div class="flex items-center space-x-6">
+                    <div class="text-sm text-gray-600">Projects / <span class="font-medium">Pothik</span></div>
+
+                    <!-- Dropdown -->
+                    <div class="relative">
+                        <button class="flex items-center px-3 py-1 border rounded-md text-sm text-gray-700 hover:bg-gray-100">
+                            All Sprints
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Navigation Links -->
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-sm underline text-gray-700 hover:text-blue-600">Board</a>
+                        <a href="#" class="text-sm underline text-gray-700 hover:text-blue-600">Backlog</a>
+                        <a href="#" class="text-sm underline text-gray-700 hover:text-blue-600">Summary</a>
+                        <a href="#" class="text-sm underline text-gray-700 hover:text-blue-600">Team</a>
+                    </div>
+                </div>
+
+                <!-- Right Section -->
+                <div>
+                    <button class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-1.5 rounded-md text-sm">
+                        Share
+                    </button>
+                </div>
+            </div>
+
+            <!-- Below Header Project Title -->
+            <div class="px-6 py-3 text-sm text-gray-800">
+                My Scrum Project ....
+            </div>
+
+            <!-- Create Sprint Button -->
+            <div class="px-6 py-3">
+                <button onclick="createSprint()" 
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm">
+                    Create a Sprint
+                </button>
+            </div>
+
+            <!-- Sprint Container -->
+            <div id="sprintContainer" class="mx-6 my-4 space-y-4">
+                <!-- Sprints will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="footer1">
+            <p style="font-family: cursive; font-size: 60px; color: white; margin-left: 50px;">Task Manager</p>
+            <p style="font-family: cursive;color: white; margin-left: 50px;">
+                Task Manager is a project management and issue tracking website that helps teams plan, track, and manage work. Limited is a leading home service company in Bangladesh which is working for democratizing digital lifestyle across the country.
+            </p>
+        </div>
+        <div class="footer2">
+            <p><a href="/">Projects</a></p>
+            <p><a href="/">Product Guide</a></p>
+            <p><a href="/">About</a></p>
+        </div>
+        <div class="footer3">
+            <p>House #08, Road #10, Stadium Road,</p>
+            <p>Mirpur, Dhaka, Bangladesh</p>
+            <p>+88 01328911249</p>
+            <p>task_manager1@gmail.com</p>
+        </div>
+    </div>
+
+    <!-- Script Section -->
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const projectId = urlParams.get('id');
+        const email = urlParams.get('email');
+
+        // Load project and user name
+        fetch(`get_project_and_user.php?id=${projectId}&email=${email}`)
+            .then(res => res.json())
+            .then(data => {
+                document.querySelector('.text-xl.font-bold').textContent = data.project_name;
+                document.querySelector('.cursor').textContent = data.user_name;
+                document.querySelector('.font-medium').textContent = data.project_name;
+            });
+
+        function createSprint() {
+            const sprintName = prompt("Enter sprint name:");
+            const startDate = prompt("Enter start date (YYYY-MM-DD):");
+            const endDate = prompt("Enter end date (YYYY-MM-DD):");
+
+            fetch("create_sprint.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    project_id: projectId,
+                    sprint_name: sprintName,
+                    start_date: startDate,
+                    end_date: endDate
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                const sprintId = data.sprint_id;
+                addSprintToDOM(sprintName, startDate, endDate, sprintId);
+            });
+        }
+
+        function addSprintToDOM(name, start, end, sprintId) {
+            const container = document.getElementById('sprintContainer');
+            const sprintDiv = document.createElement('div');
+            sprintDiv.className = 'border rounded-md bg-white';
+
+            sprintDiv.innerHTML = `
+                <div class="flex items-center justify-between bg-gray-100 px-4 py-2 border-b">
+                    <div class="flex items-center space-x-3">
+                        <input type="checkbox" class="w-4 h-4">
+                        <button class="flex items-center text-sm font-semibold text-gray-800 hover:text-blue-600">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                            ${name}
+                        </button>
+                        <span class="text-sm text-gray-600 cursor-pointer" 
+                              onclick="editSprintDates(this, ${sprintId})" 
+                              data-sprint-id="${sprintId}">
+                            ${start}–${end}
+                        </span>
+                        <span class="text-sm text-gray-600">(0 issue)</span>
+                    </div>
+                    <button onclick="this.closest('div.border.rounded-md').remove()" 
+                            class="text-red-600 hover:text-red-800 text-sm">❌ Delete</button>
+                </div>
+                <div class="flex items-center justify-between px-4 py-2 border-b hover:bg-gray-50">
+                    <div class="text-sm text-gray-800">${name}-Issue-1</div>
+                    <div class="flex items-center space-x-4">
+                        <span class="text-xs border px-2 py-0.5 rounded-md text-gray-600 bg-gray-50">To Do</span>
+                    </div>
+                </div>
+                <div class="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer" 
+                     onclick="createIssue(${sprintId})">
+                    <svg class="w-4 h-4 mr-2 text-gray-600" fill="none" stroke="currentColor" stroke-width="2" 
+                         viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    <span class="text-sm text-gray-700">Create Issue</span>
+                </div>`;
+            container.appendChild(sprintDiv);
+        }
+
+        function createIssue(sprintId) {
+            const title = prompt("Issue title:");
+            const description = prompt("Issue description:");
+            fetch("create_issue.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    project_id: projectId,
+                    sprint_id: sprintId,
+                    title,
+                    description,
+                    created_by: 1 // Replace with real user_id from session if needed
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert("Issue Created with ID: " + data.task_id);
+            });
+        }
+
+        function editSprintDates(span, sprintId) {
+            const currentText = span.textContent;
+            const [currentStart, currentEnd] = currentText.split("–");
+            const newStart = prompt("Enter new start date (YYYY-MM-DD):", currentStart.trim());
+            const newEnd = prompt("Enter new end date (YYYY-MM-DD):", currentEnd.trim());
+
+            if (!newStart || !newEnd) return;
+
+            fetch("update_sprint_dates.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ sprint_id: sprintId, start_date: newStart, end_date: newEnd })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    span.textContent = `${newStart}–${newEnd}`;
+                } else {
+                    alert("Failed to update sprint dates.");
+                }
+            });
+        }
+    </script>
+</body>
+</html>
