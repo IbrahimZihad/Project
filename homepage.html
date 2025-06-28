@@ -1,216 +1,196 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="homenav.css">
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Document</title>
+  <link rel="stylesheet" href="homenav.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
-    <navbar class="navbar">
-        <ul class="nav-list">
-            <p class="logo">
-                Task Manager
-            </p>
-        </ul>
-        <ul class="nav-list">
-            <li><a href="/homepage.html">Home</a></li>
-            <li><a href="/project_guide.html">Product Guide</a></li>
-            <li><a href="/about.html">About</a></li>
-        </ul>
-        <ul class="nav-list">
-            <button id="login-btn" onclick="openLoginModal()">
-                Login
-            </button>
-        </ul>
-    </navbar>
-    <div id="bg-image-container">
-        
-        <div class="text">
-            <p id="l1">
-                Team Work??
-            </p><br>
-            <p id="l2">
-                Use Task Manager!!
-            </p><br>
-            <p>
-                The only tool your team needs to plan and track work.
-            </p>
-        </div>
 
-        <div id="Register-txt">
-            <p onclick="openSignUpModal()">Register Now</p>
-        </div>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <ul class="nav-list">
+      <li class="logo">Task Manager</li>
+    </ul>
+    <ul class="nav-list">
+      <li><a href="/homepage.html">Home</a></li>
+      <li><a href="/project_guide.html">Product Guide</a></li>
+      <li><a href="/about.html">About</a></li>
+    </ul>
+    <ul class="nav-list">
+      <li>
+        <button id="login-btn" onclick="openLoginModal()">Login</button>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Hero Section -->
+  <div id="bg-image-container">
+    <div class="text">
+      <p id="l1">Team Work??</p><br />
+      <p id="l2">Use Task Manager!!</p><br />
+      <p>The only tool your team needs to plan and track work.</p>
     </div>
+    <div id="Register-txt">
+      <p onclick="openSignUpModal()">Register Now</p>
+    </div>
+  </div>
 
-    <!--Modal for Login-->
-    <div id="loginModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center">
-        <div class="bg-white p-6 rounded shadow w-96">
-          <h2 class="text-lg font-bold mb-4">Log In</h2>
-      
-          <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-          <input id="email" type="email" placeholder="Email" class="w-full border p-2 mb-2">
-      
-          <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-          <input id="password" type="password" placeholder="Password" class="w-full border p-2 mb-4">
-      
-          <div class="flex flex-col items-stretch gap-2">
-            <button onclick="logIn()" class="bg-blue-500 text-white px-4 py-2 rounded">Log In</button>
-            <button onclick="openSignUpModal()" class="bg-green-500 text-white px-4 py-2 rounded">Sign Up</button>
-            <button onclick="closeLoginModal()" class="bg-red-400 text-white px-4 py-2 rounded">Cancel</button>
-          </div>
-        </div>
+  <!-- Login Modal -->
+  <div id="loginModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center">
+    <div class="bg-white p-6 rounded shadow w-96">
+      <h2 class="text-lg font-bold mb-4">Log In</h2>
+      <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+      <input id="email" type="email" placeholder="Email" class="w-full border p-2 mb-2" />
+
+      <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+      <input id="password" type="password" placeholder="Password" class="w-full border p-2 mb-4" />
+
+      <div class="flex flex-col items-stretch gap-2">
+        <button onclick="logIn()" class="bg-blue-500 text-white px-4 py-2 rounded">Log In</button>
+        <button onclick="openSignUpModal()" class="bg-green-500 text-white px-4 py-2 rounded">Sign Up</button>
+        <button onclick="closeLoginModal()" class="bg-red-400 text-white px-4 py-2 rounded">Cancel</button>
       </div>
+    </div>
+  </div>
 
-    <!--Modal for sign up-->
-    <div id="signupModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center">
-        <div class="bg-white p-6 rounded shadow w-96">
-          <h2 class="text-lg font-bold mb-4">Sign Up</h2>
-      
-          <label for="signupName" class="block text-sm font-medium text-gray-700">Name</label>
-          <input id="signupName" type="text" placeholder="Name" class="w-full border p-2 mb-2">
-      
-          <label for="signupEmail" class="block text-sm font-medium text-gray-700">Email</label>
-          <input id="signupEmail" type="email" placeholder="Email" class="w-full border p-2 mb-2">
-      
-          <label for="signupPassword" class="block text-sm font-medium text-gray-700">Password</label>
-          <input id="signupPassword" type="password" placeholder="Password" class="w-full border p-2 mb-4">
-      
-          <div class="flex flex-col items-stretch gap-2">
-            <button onclick="signUp()" class="bg-green-500 text-white px-4 py-2 rounded">Sign Up</button>
-            <button onclick="closeLoginModal()" class="bg-blue-500 text-white px-4 py-2 rounded">Log In</button>
-            <button onclick="closeSignUpModal()" class="bg-red-400 text-white px-4 py-2 rounded">Cancel</button>
-          </div>
-        </div>
+  <!-- Sign Up Modal -->
+  <div id="signupModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center">
+    <div class="bg-white p-6 rounded shadow w-96">
+      <h2 class="text-lg font-bold mb-4">Sign Up</h2>
+      <label for="signupName" class="block text-sm font-medium text-gray-700">Name</label>
+      <input id="signupName" type="text" placeholder="Name" class="w-full border p-2 mb-2" />
+
+      <label for="signupEmail" class="block text-sm font-medium text-gray-700">Email</label>
+      <input id="signupEmail" type="email" placeholder="Email" class="w-full border p-2 mb-2" />
+
+      <label for="signupPassword" class="block text-sm font-medium text-gray-700">Password</label>
+      <input id="signupPassword" type="password" placeholder="Password" class="w-full border p-2 mb-4" />
+
+      <div class="flex flex-col items-stretch gap-2">
+        <button onclick="signUp()" class="bg-green-500 text-white px-4 py-2 rounded">Sign Up</button>
+        <button onclick="switchToLogin()" class="bg-blue-500 text-white px-4 py-2 rounded">Log In</button>
+        <button onclick="closeSignUpModal()" class="bg-red-400 text-white px-4 py-2 rounded">Cancel</button>
       </div>
-
-    <div id="div2">
-        <p id="p1">
-            Teamwork solutions for high-performance teams
-        </p>
-        <p id="p2">
-            Plan, track, and deliver your biggest ideas together.
-        </p>
     </div>
-    <div id="div3">
-        <div id="div3a">
-            <div id="motivation">
-                <li>
-                    Dream it,
-                </li>
-                <li>
-                    Plan it,
-                </li>
-                <li>
-                    Launch it
-                </li>
-            </div>
-        </div>
-        <div id="div3b">
-            <img src="../images/Div3IMG2.png">
-        </div>
+  </div>
+
+  <!-- Info Section -->
+  <div id="div2">
+    <p id="p1">Teamwork solutions for high-performance teams</p>
+    <p id="p2">Plan, track, and deliver your biggest ideas together.</p>
+  </div>
+
+  <!-- Features Section -->
+  <div id="div3">
+    <div id="div3a">
+      <ul id="motivation">
+        <li>Dream it,</li>
+        <li>Plan it,</li>
+        <li>Launch it</li>
+      </ul>
     </div>
-    <div class="footer">
-        <div class="footer1">
-            <p style="font-family: cursive; font-size: 60px; color: white; margin-left: 50px;">Task Manager</p>
-            <p style="font-family: cursive;color: white; margin-left: 50px;">Task Manager is a project management and issue tracking website that helps teams plan, track, and manage work.  Limited is a leading home service company in Bangladesh which is working for democratizing digital lifestyle across the country.</p>
-        </div>
-        <div class="footer2">
-            <p style="position: relative; top: 180px;"><a href="/">Home</a></p>
-            <p style="position: relative; top: 180px;"><a href="/">Product Guide</a></p>
-            <p style="position: relative; top: 180px;"><a href="/">About</a></p>
-        </div>
-        <div class="footer3">
-            <p>
-
-                 House #08, Road #10, Stadium Road, 
-
-
-            </p>
-            <p>
-                Mirpur, Dhaka, Bangladesh
-            </p>
-            <p>
-                +88 01328911249
-            </p>
-            <p>
-                task_manager1@gmail.com
-            </p>
-        </div>
+    <div id="div3b">
+      <img src="../images/Div3IMG2.png" alt="Team planning illustration" />
     </div>
+  </div>
 
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer1">
+      <p style="font-family: cursive; font-size: 60px; color: white; margin-left: 50px;">Task Manager</p>
+      <p style="font-family: cursive; color: white; margin-left: 50px;">
+        Task Manager is a project management and issue tracking website that helps teams plan, track, and manage work.
+        Limited is a leading home service company in Bangladesh which is working for democratizing digital lifestyle
+        across the country.
+      </p>
+    </div>
+    <div class="footer2">
+      <p style="position: relative; top: 180px;"><a href="/">Home</a></p>
+      <p style="position: relative; top: 180px;"><a href="/">Product Guide</a></p>
+      <p style="position: relative; top: 180px;"><a href="/">About</a></p>
+    </div>
+    <div class="footer3">
+      <p>House #08, Road #10, Stadium Road,</p>
+      <p>Mirpur, Dhaka, Bangladesh</p>
+      <p>+88 01328911249</p>
+      <p>task_manager1@gmail.com</p>
+    </div>
+  </div>
 
+  <!-- Script -->
+  <script>
+    function openLoginModal() {
+      document.getElementById('loginModal').classList.remove('hidden');
+      document.getElementById('signupModal').classList.add('hidden');
+      document.getElementById('email').value = '';
+      document.getElementById('password').value = '';
+    }
 
-    <!--Script-->
-    <script>
-        function openLoginModal() {
-            document.getElementById('loginModal').classList.remove('hidden');
-            document.getElementById('signupModal').classList.add('hidden');
+    function openSignUpModal() {
+      document.getElementById('signupModal').classList.remove('hidden');
+      document.getElementById('loginModal').classList.add('hidden');
+    }
 
-            // Clear previous values
-            document.getElementById('email').value = '';
-            document.getElementById('password').value = '';
-        }
+    function closeSignUpModal() {
+      document.getElementById('signupModal').classList.add('hidden');
+    }
 
-        function openSignUpModal() {
-          document.getElementById('signupModal').classList.remove('hidden');
-          document.getElementById('loginModal').classList.add('hidden');
+    function closeLoginModal() {
+      document.getElementById('loginModal').classList.add('hidden');
+    }
+
+    // New function to switch from sign-up modal to login modal
+    function switchToLogin() {
+      closeSignUpModal();
+      openLoginModal();
+    }
+
+    function logIn() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      fetch('backend/login.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert('Login Successful!');
+          closeLoginModal();
+          window.location.href = `dashboard.html?email=${encodeURIComponent(email)}`;
+        } else {
+          alert('Login Failed: ' + data.message);
         }
-        
-        function closeSignUpModal() {
-          document.getElementById('signupModal').classList.add('hidden');
+      });
+    }
+
+    function signUp() {
+      const name = document.getElementById('signupName').value;
+      const email = document.getElementById('signupEmail').value;
+      const password = document.getElementById('signupPassword').value;
+
+      fetch('backend/signup.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert('Signup Successful! Please log in.');
+          closeSignUpModal();
+          window.location.href = `dashboard.html?email=${encodeURIComponent(email)}`;
+        } else {
+          alert('Signup Failed: ' + data.message);
         }
-        
-        function closeLoginModal() {
-          document.getElementById('loginModal').classList.add('hidden');
-        }
-        
-        // LOGIN FUNCTION
-        function logIn() {
-          const email = document.getElementById('email').value;
-          const password = document.getElementById('password').value;
-        
-          fetch('backend/login.php', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ email, password })
-          })
-          .then(res => res.json())
-          .then(data => {
-            if (data.success) {
-              alert('Login Successful!');
-              closeLoginModal();
-              window.location.href = `dashboard.html?email=${encodeURIComponent(email)}`
-            } else {
-              alert('Login Failed: ' + data.message);
-            }
-          });
-        }
-        
-        // SIGNUP FUNCTION
-        function signUp() {
-          const name = document.getElementById('signupName').value;
-          const email = document.getElementById('signupEmail').value;
-          const password = document.getElementById('signupPassword').value;
-        
-          fetch('backend/signup.php', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ name, email, password })
-          })
-          .then(res => res.json())
-          .then(data => {
-            if (data.success) {
-              alert('Signup Successful! Please log in.');
-              closeSignUpModal();
-              window.location.href = `dashboard.html?email=${encodeURIComponent(email)}`
-            } else {
-              alert('Signup Failed: ' + data.message);
-            }
-          });
-        }
-        </script>
-        
+      });
+    }
+  </script>
+
 </body>
 </html>
