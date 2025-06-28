@@ -1,13 +1,7 @@
-<?php
-$host = 'localhost';
-$db = 'taskmanager';
-$user = 'root';
-$pass = '';
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("DB connection failed: " . $e->getMessage());
+<?php
+$conn = new mysqli("localhost", "root", "", "taskmanager");
+if ($conn->connect_error) {
+    die(json_encode(["error" => "DB connection failed"]));
 }
 ?>
