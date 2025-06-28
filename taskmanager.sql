@@ -299,3 +299,15 @@ VALUES (
         'Done',
         1
     );
+
+
+
+
+    INSERT INTO
+    `project_roles` (`role_id`, `role_name`)
+VALUES (1, 'Project Manager'),
+    (
+        2,
+        'Assistant Project Manager'
+    ),
+    (3, 'Team Member');
