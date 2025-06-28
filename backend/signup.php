@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: application/json');
-require_once 'db_connection.php'; // Create this separately to handle DB
+require_once 'db.php'; // Create this separately to handle DB
 
 $data = json_decode(file_get_contents('php://input'), true);
 $name = trim($data['name'] ?? '');
