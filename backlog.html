@@ -157,10 +157,20 @@
             }
         }
 
-        function addSprintToDOM(name, start, end, sprintId) {
+        function addSprintToDOM(name, start, end, sprintId, issues = []) {
             const container = document.getElementById('sprintContainer');
             const sprintDiv = document.createElement('div');
             sprintDiv.className = 'border rounded-md bg-white';
+
+            const issueCount = issues.length;
+            let issuesHTML = issues.map(issue => `
+                <div class="flex items-center justify-between px-4 py-2 border-b hover:bg-gray-50">
+                    <div class="text-sm text-gray-800">${issue.title}</div>
+                    <div class="flex items-center space-x-4">
+                        <span class="text-xs border px-2 py-0.5 rounded-md text-gray-600 bg-gray-50">${issue.status}</span>
+                    </div>
+                </div>
+            `).join('');
 
             sprintDiv.innerHTML = `
                 <div class="flex items-center justify-between bg-gray-100 px-4 py-2 border-b">
@@ -173,31 +183,27 @@
                             ${name}
                         </button>
                         <span class="text-sm text-gray-600 cursor-pointer" 
-                              onclick="editSprintDates(this, ${sprintId})" 
-                              data-sprint-id="${sprintId}">
+                            onclick="editSprintDates(this, ${sprintId})" 
+                            data-sprint-id="${sprintId}">
                             ${start}–${end}
                         </span>
-                        <span class="text-sm text-gray-600">(0 issue)</span>
+                        <span class="text-sm text-gray-600">(${issueCount} ${issueCount === 1 ? 'issue' : 'issues'})</span>
                     </div>
                     <button onclick="this.closest('div.border.rounded-md').remove()" 
                             class="text-red-600 hover:text-red-800 text-sm">❌ Delete</button>
                 </div>
-                <div class="flex items-center justify-between px-4 py-2 border-b hover:bg-gray-50">
-                    <div class="text-sm text-gray-800">${name}-Issue-1</div>
-                    <div class="flex items-center space-x-4">
-                        <span class="text-xs border px-2 py-0.5 rounded-md text-gray-600 bg-gray-50">To Do</span>
-                    </div>
-                </div>
+                ${issuesHTML}
                 <div class="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer" 
-                     onclick="createIssue(${sprintId})">
+                    onclick="createIssue(${sprintId})">
                     <svg class="w-4 h-4 mr-2 text-gray-600" fill="none" stroke="currentColor" stroke-width="2" 
-                         viewBox="0 0 24 24">
+                        viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
                     </svg>
                     <span class="text-sm text-gray-700">Create Issue</span>
                 </div>`;
             container.appendChild(sprintDiv);
         }
+
 
         async function createIssue(sprintId) {
             const title = prompt("Issue title:");
@@ -242,18 +248,31 @@
                 const res = await axios.get("backend/get_sprints.php", {
                     params: { project_id: projectId }
                 });
+                const sprints = res.data;
                 const container = document.getElementById('sprintContainer');
                 container.innerHTML = '';
-                res.data.forEach(sprint => {
-                    addSprintToDOM(sprint.sprint_name, sprint.start_date, sprint.end_date, sprint.sprint_id);
-                });
+
+                for (const sprint of sprints) {
+                    const issuesRes = await axios.get("backend/get_issues.php", {
+                        params: { sprint_id: sprint.sprint_id }
+                    });
+                    const issues = issuesRes.data || [];
+                    addSprintToDOM(sprint.sprint_name, sprint.start_date, sprint.end_date, sprint.sprint_id, issues);
+                }
             } catch (err) {
-                console.error("Failed to load sprints:", err);
+                console.error("Failed to load sprints or issues:", err);
             }
         }
 
+
         initPage();
         loadSprints();
+
+        function confirmLogout() {
+            if (confirm("Do you want to log out?")) {
+                window.location.href = 'homepage.html';
+            }
+        }
     </script>
 </body>
 </html>
