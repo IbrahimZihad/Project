@@ -29,7 +29,24 @@
         <div class="dropdown-toggle">Projects ▼</div>
         <div class="dropdown-menu"></div>
       </div>
-      <div class="menu-item">Team</div>
+      <a class="menu-item" id="teamLink" href="#">Team</a>
+      <script>
+        // Set Team link dynamically with email and first project id (if available)
+        async function setTeamLink() {
+          try {
+        const res = await axios.post('backend/get_projects_by_email.php', { email });
+        if (res.data.success && res.data.projects.length > 0) {
+          const firstProject = res.data.projects[0];
+          document.getElementById('teamLink').href = `team/team.html?email=${email}&id=${firstProject.id}`;
+        } else {
+          document.getElementById('teamLink').href = `team/team.html?email=${email}`;
+        }
+          } catch (err) {
+        document.getElementById('teamLink').href = `team/team.html?email=${email}`;
+          }
+        }
+        window.addEventListener('DOMContentLoaded', setTeamLink);
+      </script>
     </div>
 
     <div class="right p-6">
