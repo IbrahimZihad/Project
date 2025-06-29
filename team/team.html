@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-50 text-gray-900">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Team - Task Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <nav class="flex items-center justify-between px-8 py-4 bg-blue-600 shadow">
+        <div class="flex items-center">
+            <span class="text-3xl font-bold text-white font-cursive">Task Manager</span>
+        </div>
+        <ul class="flex space-x-8">
+            <li><a href="../dashboard.html" class="text-white hover:underline">Projects</a></li>
+            <li><a href="../project_guide.html" class="text-white hover:underline">Product Guide</a></li>
+            <li><a href="../about.html" class="text-white hover:underline">About</a></li>
+        </ul>
+    </nav>
+
+    <div class="flex flex-1">
+        <!-- Sidebar -->
+        <aside class="sidebar bg-pink-100 w-1/5 p-6 flex flex-col">
+            <h2 class="text-xl font-bold mb-4">Pothik</h2>
+            <div class="text-sm mb-2">Planning</div>
+            <ul class="space-y-2 mt-2">
+                <li>
+                    <a href="../board.html" class="block hover:underline">📋 Board</a>
+                </li>
+                <li>
+                    <a href="../backlog.html" class="block hover:underline">🔍 Backlog</a>
+                </li>
+                <li>
+                    <a href="../summary.html" class="block hover:underline">📑 Summary</a>
+                </li>
+                <li>
+                    <a href="team.html" class="block font-bold hover:underline">👥 Team</a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8 overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <div class="text-gray-700 font-medium">Projects / Pothik</div>
+                    <select class="border rounded px-2 py-1 text-sm mt-1">
+                        <option>All Sprints</option>
+                    </select>
+                </div>
+                <button class="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded shadow">Share</button>
+            </div>
+
+            <!-- Subnav -->
+            <div class="flex space-x-8 border-b mb-6">
+                <a href="../board.html" class="py-2 px-1 border-b-2 border-transparent hover:border-blue-400">Board</a>
+                <a href="../backlog.html"
+                    class="py-2 px-1 border-b-2 border-transparent hover:border-blue-400">Backlog</a>
+                <a href="../summary.html"
+                    class="py-2 px-1 border-b-2 border-transparent hover:border-blue-400">Summary</a>
+                <a href="team.html" class="py-2 px-1 border-b-2 border-blue-500 font-semibold">Team</a>
+            </div>
+
+            <!-- Invite -->
+            <div class="flex items-center mb-6">
+                <input id="inviteEmail" type="email" placeholder="Email......."
+                    class="border px-4 py-2 rounded w-64 mr-2" />
+                <button onclick="inviteMember()"
+                    class="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded">Invite</button>
+            </div>
+
+            <!-- Team Members -->
+            <div>
+                <div class="text-lg font-semibold mb-4">Team Members</div>
+                <div id="teamList" class="space-y-4">
+                    <!-- Team members will be loaded here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-blue-900 text-white mt-auto">
+        <div class="max-w-7xl mx-auto px-8 py-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <p class="font-cursive text-4xl mb-2">Task Manager</p>
+                <p class="font-cursive">Task Manager is a project management and issue tracking website that helps teams
+                    plan,
+                    track, and manage work.</p>
+            </div>
+            <div>
+                <p class="font-semibold mb-2">Quick Links</p>
+                <ul class="space-y-1">
+                    <li><a href="../projects.html" class="hover:underline">Projects</a></li>
+                    <li><a href="../guide.html" class="hover:underline">Product Guide</a></li>
+                    <li><a href="../about.html" class="hover:underline">About</a></li>
+                </ul>
+            </div>
+            <div>
+                <p class="font-semibold mb-2">Contact</p>
+                <p>House #08, Road #10, Stadium Road,</p>
+                <p>Mirpur, Dhaka, Bangladesh</p>
+                <p>+88 01328911249</p>
+                <p>task_manager1@gmail.com</p>
+            </div>
+        </div>
+        <div class="text-center py-2 bg-blue-950 text-xs">
+            &copy; 2025 Task Manager. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        // Fetch and render team members
+        async function loadTeamMembers() {
+            const res = await fetch('get_team_members.php');
+            const members = await res.json();
+            const teamList = document.getElementById('teamList');
+            teamList.innerHTML = '';
+            members.forEach(member => {
+                teamList.innerHTML += `
+          <div class="flex items-center space-x-4 bg-white rounded shadow p-4">
+            <span class="inline-block w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-2xl">
+              ${getAvatarIcon(member.name)}
+            </span>
+            <span class="font-medium">${member.name}</span>
+            <span class="text-gray-500">${member.email}</span>
+            <span class="ml-auto">
+              <select class="border rounded px-2 py-1 text-sm">
+                <option${member.role === 'Admin' || member.role === 'Project Manager' ? ' selected' : ''}>Admin</option>
+                <option${member.role === 'Ast. Admin' ? ' selected' : ''}>Ast. Admin</option>
+                <option${member.role === 'Member' || member.role === 'No Role' ? ' selected' : ''}>Member</option>
+              </select>
+            </span>
+            <button class="ml-2 text-gray-400 hover:text-red-600" title="Remove">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+        `;
+            });
+        }
+
+        // Simple avatar icon based on name
+        function getAvatarIcon(name) {
+            const icons = [
+                '👤', '🧑‍💻', '🧑‍🎨', '🧑‍🔬', '🧑‍🏫', '🧑‍🚀', '🧑‍⚕️', '🧑‍🍳', '🧑‍🔧', '🧑‍🌾'
+            ];
+            return icons[name.length % icons.length];
+        }
+
+        // Invite member (dummy, needs backend)
+        function inviteMember() {
+            const email = document.getElementById('inviteEmail').value;
+            if (!email) {
+                alert('Please enter an email address.');
+                return;
+            }
+            // Here you would POST to your backend to invite/add the member
+            alert('Invitation sent to ' + email);
+            document.getElementById('inviteEmail').value = '';
+        }
+
+        window.onload = loadTeamMembers;
+    </script>
+</body>
+
+</html>

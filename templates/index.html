@@ -12,27 +12,38 @@
 <body class="flex flex-col h-screen">
 
   <!-- Header -->
-  <header class="bg-white shadow p-4 flex justify-between items-center">
-    <h1 class="text-2xl font-bold">TaskManager</h1>
-    <nav class="space-x-6">
-      <a href="#" class="text-gray-600 hover:text-black">Projects</a>
-      <a href="#" class="text-gray-600 hover:text-black">Product Guide</a>
-      <a href="#" class="text-gray-600 hover:text-black">About</a>
-    </nav>
-  </header>
+  <nav class="flex items-center justify-between px-8 py-4 bg-blue-600 shadow">
+    <div class="flex items-center">
+      <span class="text-3xl font-bold text-white font-cursive">Task Manager</span>
+    </div>
+    <ul class="flex space-x-8">
+      <li><a href="../project.html" class="text-white hover:underline">Projects</a></li>
+      <li><a href="../project_guide.html" class="text-white hover:underline">Product Guide</a></li>
+      <li><a href="../about.html" class="text-white hover:underline">About</a></li>
+    </ul>
+  </nav>
 
   <!-- Main -->
   <div class="flex flex-1">
     <!-- Sidebar -->
-    <aside class="bg-pink-100 w-1/5 p-4 space-y-4">
-      <div class="font-semibold">Meeting</div>
-      <ul class="space-y-1">
-        <li>Board</li>
-        <li>Backlog</li>
-        <li class="font-bold">Summary</li>
-        <li>Team</li>
+    <aside class="sidebar bg-pink-100 w-1/5 p-6 flex flex-col">
+      <h2 class="text-xl font-bold mb-4">Pothik</h2>
+      <div class="text-sm mb-2">Planning</div>
+      <ul class="space-y-2 mt-2">
+        <li>
+          <a href="../dashboard.html" class="block hover:underline">📋 Board</a>
+        </li>
+        <li>
+          <a href="../backlog.html" class="block hover:underline">🔍 Backlog</a>
+        </li>
+        <li>
+          <a href="../templates/index.html" class="block font-bold hover:underline">📑 Summary</a>
+        </li>
+        <li>
+          <a href="../team/team.html" class="block hover:underline">👥 Team</a>
+        </li>
       </ul>
-    </aside>
+      </aside>
 
     <!-- Content -->
     <main class="flex-1 p-6 overflow-y-auto">
@@ -102,15 +113,31 @@
   </div>
 
   <!-- Footer -->
-  <footer class="bg-gray-100 text-sm p-4">
-    <div class="flex justify-between">
-      <div><strong>Pani</strong><br>All rights reserved © 2025</div>
-      <div class="space-x-4">
-        <a href="#" class="hover:text-gray-800">Home</a>
-        <a href="#" class="hover:text-gray-800">Projects</a>
-        <a href="#" class="hover:text-gray-800">Product Guide</a>
-        <a href="#" class="hover:text-gray-800">About</a>
+  <footer class="bg-blue-900 text-white mt-auto">
+    <div class="max-w-7xl mx-auto px-8 py-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div>
+        <p class="font-cursive text-4xl mb-2">Task Manager</p>
+        <p class="font-cursive">Task Manager is a project management and issue tracking website that helps teams plan,
+          track, and manage work.</p>
       </div>
+      <div>
+        <p class="font-semibold mb-2">Quick Links</p>
+        <ul class="space-y-1">
+          <li><a href="projects.html" class="hover:underline">Projects</a></li>
+          <li><a href="guide.html" class="hover:underline">Product Guide</a></li>
+          <li><a href="about.html" class="hover:underline">About</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="font-semibold mb-2">Contact</p>
+        <p>House #08, Road #10, Stadium Road,</p>
+        <p>Mirpur, Dhaka, Bangladesh</p>
+        <p>+88 01328911249</p>
+        <p>task_manager1@gmail.com</p>
+      </div>
+    </div>
+    <div class="text-center py-2 bg-blue-950 text-xs">
+      &copy; 2025 Task Manager. All rights reserved.
     </div>
   </footer>
 
