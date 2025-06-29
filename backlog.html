@@ -112,7 +112,14 @@
 
         linksToUpdate.forEach(id => {
             const link = document.getElementById(id);
-            if (link) link.href = `${id.replace(/^(link|top|nav|footer)/, '').toLowerCase()}.html?id=${projectId}&email=${email}`;
+            if (!link) return;
+            if (id === 'linkTeam' || id === 'topTeam') {
+                link.href = `team/team.html?id=${projectId}&email=${email}`;
+            } else if (id === 'linkSummary' || id === 'topSummary') {
+                link.href = `templates/index.html?id=${projectId}&email=${email}`;
+            } else {
+                link.href = `${id.replace(/^(link|top|nav|footer)/, '').toLowerCase()}.html?id=${projectId}&email=${email}`;
+            }
         });
 
         document.getElementById('linkBacklog').href = `backlog.html?id=${projectId}&email=${email}`;
