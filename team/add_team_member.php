@@ -1,3 +1,4 @@
+
 <?php
 header('Content-Type: application/json');
 require_once 'db.php';
@@ -61,3 +62,4 @@ try {
 }
 
 $conn->close();
+?>

@@ -192,21 +192,80 @@
         }
 
         // Invite member (dummy, needs backend)
-        function inviteMember() {
-            const email = document.getElementById('inviteEmail').value;
-            if (!email) {
-                alert('Please enter an email address.');
-                return;
-            }
-            // Here you would POST to your backend to invite/add the member
-            alert('Invitation sent to ' + email);
-            document.getElementById('inviteEmail').value = '';
-        }
-
+        async function inviteMember() {
+    const email = document.getElementById('inviteEmail').value;
+    if (!email) {
+        alert('Please enter an email address.');
+        return;
+    }
+    const name = prompt('Enter the name of the new member:');
+    if (!name) {
+        alert('Name is required.');
+        return;
+    }
+    const res = await fetch('add_team_member.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, name })
+    });
+    const data = await res.json();
+    if (data.success) {
+        alert('Invitation sent to ' + email);
+        document.getElementById('inviteEmail').value = '';
+        loadTeamMembers();
+    } else {
+        alert(data.error || 'Failed to invite member');
+    }
+}
         window.onload = function () {
             setLinks();
             loadTeamMembers();
         };
+
+          // Add event listeners for role change
+            document.querySelectorAll('.role-select').forEach(select => {
+                select.addEventListener('change', async function () {
+                    const userDiv = this.closest('[data-user-id]');
+                    const userId = userDiv.getAttribute('data-user-id');
+                    const roleId = this.value;
+                    const isAdmin = roleId == 1;
+                    const res = await fetch('update_team_member.php', {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ user_id: userId, role_id: roleId, is_admin: isAdmin })
+                    });
+                    const data = await res.json();
+                    if (!data.success) {
+                        alert(data.error || 'Failed to update role');
+                    } else {
+                        loadTeamMembers();
+                    }
+                });
+            });
+
+            // Add event listeners for remove button (optional: implement backend)
+            document.querySelectorAll('.remove-btn').forEach(btn => {
+                btn.addEventListener('click', async function () {
+                    const userDiv = this.closest('[data-user-id]');
+                    const userId = userDiv.getAttribute('data-user-id');
+                    if (confirm('Remove this team member?')) {
+                        // You need to implement a remove_team_member.php endpoint
+                        const res = await fetch('update_team_member.php', {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ user_id: userId, role_id: null })
+                        });
+                        const data = await res.json();
+                        if (!data.success) {
+                            alert(data.error || 'Failed to remove member');
+                        } else {
+                            loadTeamMembers();
+                        }
+                    }
+                });
+            });
+
+            // ...existing code...
     </script>
 </body>
 
