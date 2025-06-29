@@ -16,9 +16,9 @@
             <span class="text-3xl font-bold text-white font-cursive">Task Manager</span>
         </div>
         <ul class="flex space-x-8">
-            <li><a href="../dashboard.html" class="text-white hover:underline">Projects</a></li>
-            <li><a href="../project_guide.html" class="text-white hover:underline">Product Guide</a></li>
-            <li><a href="../about.html" class="text-white hover:underline">About</a></li>
+            <li><a id="projectsLink" class="text-white hover:underline">Projects</a></li>
+            <li><a id="productGuideLink" class="text-white hover:underline">Product Guide</a></li>
+            <li><a id="aboutLink" class="text-white hover:underline">About</a></li>
         </ul>
     </nav>
 
@@ -29,16 +29,16 @@
             <div class="text-sm mb-2">Planning</div>
             <ul class="space-y-2 mt-2">
                 <li>
-                    <a href="../board.html" class="block hover:underline">📋 Board</a>
+                    <a id="boardLink" class="block hover:underline">📋 Board</a>
                 </li>
                 <li>
-                    <a href="../backlog.html" class="block hover:underline">🔍 Backlog</a>
+                    <a id="backlogLink" class="block hover:underline">🔍 Backlog</a>
                 </li>
                 <li>
-                    <a href="../summary.html" class="block hover:underline">📑 Summary</a>
+                    <a id="summaryLink" class="block hover:underline">📑 Summary</a>
                 </li>
                 <li>
-                    <a href="team.html" class="block font-bold hover:underline">👥 Team</a>
+                    <a id="teamLink" class="block font-bold hover:underline">👥 Team</a>
                 </li>
             </ul>
         </aside>
@@ -57,12 +57,12 @@
 
             <!-- Subnav -->
             <div class="flex space-x-8 border-b mb-6">
-                <a href="../board.html" class="py-2 px-1 border-b-2 border-transparent hover:border-blue-400">Board</a>
-                <a href="../backlog.html"
+                <a id="subnavBoardLink" class="py-2 px-1 border-b-2 border-transparent hover:border-blue-400">Board</a>
+                <a id="subnavBacklogLink"
                     class="py-2 px-1 border-b-2 border-transparent hover:border-blue-400">Backlog</a>
-                <a href="../summary.html"
+                <a id="subnavSummaryLink"
                     class="py-2 px-1 border-b-2 border-transparent hover:border-blue-400">Summary</a>
-                <a href="team.html" class="py-2 px-1 border-b-2 border-blue-500 font-semibold">Team</a>
+                <a id="subnavTeamLink" class="py-2 px-1 border-b-2 border-blue-500 font-semibold">Team</a>
             </div>
 
             <!-- Invite -->
@@ -95,9 +95,9 @@
             <div>
                 <p class="font-semibold mb-2">Quick Links</p>
                 <ul class="space-y-1">
-                    <li><a href="../projects.html" class="hover:underline">Projects</a></li>
-                    <li><a href="../guide.html" class="hover:underline">Product Guide</a></li>
-                    <li><a href="../about.html" class="hover:underline">About</a></li>
+                    <li><a id="footerProjectsLink" class="hover:underline">Projects</a></li>
+                    <li><a id="footerGuideLink" class="hover:underline">Product Guide</a></li>
+                    <li><a id="footerAboutLink" class="hover:underline">About</a></li>
                 </ul>
             </div>
             <div>
@@ -114,6 +114,44 @@
     </footer>
 
     <script>
+        // Get query params
+        function getQueryParams() {
+            const params = {};
+            window.location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (str, key, value) {
+                params[key] = decodeURIComponent(value);
+            });
+            return params;
+        }
+
+        // Set all links with email and project_id
+        function setLinks() {
+            const params = getQueryParams();
+            const email = encodeURIComponent(params.email || '');
+            const project_id = encodeURIComponent(params.project_id || '');
+
+            // Header
+            document.getElementById('projectsLink').href = `../dashboard.html?email=${email}&project_id=${project_id}`;
+            document.getElementById('productGuideLink').href = `../project_guide.html?email=${email}&project_id=${project_id}`;
+            document.getElementById('aboutLink').href = `../about.html?email=${email}&project_id=${project_id}`;
+
+            // Sidebar
+            document.getElementById('boardLink').href = `../board.html?email=${email}&project_id=${project_id}`;
+            document.getElementById('backlogLink').href = `../backlog.html?email=${email}&project_id=${project_id}`;
+            document.getElementById('summaryLink').href = `../summary.html?email=${email}&project_id=${project_id}`;
+            document.getElementById('teamLink').href = `team.html?email=${email}&project_id=${project_id}`;
+
+            // Subnav
+            document.getElementById('subnavBoardLink').href = `../board.html?email=${email}&project_id=${project_id}`;
+            document.getElementById('subnavBacklogLink').href = `../backlog.html?email=${email}&project_id=${project_id}`;
+            document.getElementById('subnavSummaryLink').href = `../summary.html?email=${email}&project_id=${project_id}`;
+            document.getElementById('subnavTeamLink').href = `team.html?email=${email}&project_id=${project_id}`;
+
+            // Footer
+            document.getElementById('footerProjectsLink').href = `../projects.html?email=${email}&project_id=${project_id}`;
+            document.getElementById('footerGuideLink').href = `../guide.html?email=${email}&project_id=${project_id}`;
+            document.getElementById('footerAboutLink').href = `../about.html?email=${email}&project_id=${project_id}`;
+        }
+
         // Fetch and render team members
         async function loadTeamMembers() {
             const res = await fetch('get_team_members.php');
@@ -165,7 +203,10 @@
             document.getElementById('inviteEmail').value = '';
         }
 
-        window.onload = loadTeamMembers;
+        window.onload = function () {
+            setLinks();
+            loadTeamMembers();
+        };
     </script>
 </body>
 

@@ -11,10 +11,8 @@
   <!-- Navbar -->
   <div class="bg-gray-300 flex justify-between items-center p-4">
     <div class="text-xl font-semibold">Projects</div>
-    <div class="flex gap-6">
-      <a href="">Projects</a>
-      <a href="#">Product Guide</a>
-      <a href="#">About</a>
+    <div class="flex gap-6" id="navbarLinks">
+      <!-- Links will be injected by JS -->
     </div>
     <div class="w-10 h-10 bg-white rounded-full flex justify-center items-center">👤</div>
   </div>
@@ -25,11 +23,8 @@
     <div class="w-1/5 bg-pink-200 h-screen p-4">
       <h2 class="text-xl font-bold mb-4">Pothik</h2>
       <div class="text-sm">Planning</div>
-      <ul class="space-y-2 mt-4">
-        <li><a href="#" class="block">📋 Board</a></li>
-        <li><a href="#" class="block">🔍 Backlog</a></li>
-        <li><a href="#" class="block">📑 Summary</a></li>
-        <li><a href="#" class="block">👥 Team</a></li>
+      <ul class="space-y-2 mt-4" id="sidebarLinks">
+        <!-- Sidebar links will be injected by JS -->
       </ul>
     </div>
 
@@ -86,6 +81,32 @@
     if (!projectId || !email) {
       alert("Missing project ID or email. Redirecting...");
       window.location.href = "dashboard.html";
+    }
+
+    // Helper to build query string
+    function buildQuery() {
+      return `?id=${encodeURIComponent(projectId)}&email=${encodeURIComponent(email)}`;
+    }
+
+    // Inject navbar links with params
+    function injectNavbarLinks() {
+      const navbarLinks = document.getElementById("navbarLinks");
+      navbarLinks.innerHTML = `
+        <a href="project.html${buildQuery()}">Projects</a>
+        <a href="project_guide.html${buildQuery()}">Product Guide</a>
+        <a href="about.html${buildQuery()}">About</a>
+      `;
+    }
+
+    // Inject sidebar links with params
+    function injectSidebarLinks() {
+      const sidebarLinks = document.getElementById("sidebarLinks");
+      sidebarLinks.innerHTML = `
+        <li><a href="project.html${buildQuery()}" class="block">📋 Board</a></li>
+        <li><a href="backlog.html${buildQuery()}" class="block">🔍 Backlog</a></li>
+        <li><a href="templates/index.html${buildQuery()}" class="block">📑 Summary</a></li>
+        <li><a href="team/team.html${buildQuery()}" class="block">👥 Team</a></li>
+      `;
     }
 
     async function fetchProject() {
@@ -148,46 +169,47 @@
     }
 
     async function createTask() {
-    const title = document.getElementById("taskTitle").value.trim();
-    const description = document.getElementById("taskDesc").value.trim();
-    const sprintId = document.getElementById("sprintFilter").value;
-    const status = document.getElementById("taskStatus").value;
+      const title = document.getElementById("taskTitle").value.trim();
+      const description = document.getElementById("taskDesc").value.trim();
+      const sprintId = document.getElementById("sprintFilter").value;
+      const status = document.getElementById("taskStatus").value;
 
-    if (!title) {
+      if (!title) {
         alert("Title is required.");
         return;
-    }
+      }
 
-    try {
+      try {
         const res = await fetch("backend/create_task.php", {
-        method: "POST",
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
+          method: "POST",
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
             title,
             description,
             sprint_id: sprintId || null,
             project_id: projectId,
             email: email,
             status: status || "To Do"
-        })
+          })
         });
 
         const data = await res.json();
 
         if (data.success) {
-        closeTaskModal();
-        await loadTasks();  // <-- ensure this is awaited!
+          closeTaskModal();
+          await loadTasks();
         } else {
-        alert("Task creation failed: " + (data.message || "Unknown error"));
+          alert("Task creation failed: " + (data.message || "Unknown error"));
         }
-    } catch (err) {
+      } catch (err) {
         console.error("Task creation error:", err);
         alert("Task creation error: " + err.message);
+      }
     }
-    }
-
 
     window.onload = async () => {
+      injectNavbarLinks();
+      injectSidebarLinks();
       await fetchProject();
       await fetchSprints();
       await loadTasks();
