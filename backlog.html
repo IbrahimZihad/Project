@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
+
 <body>
     <navbar class="navbar">
         <ul class="nav-list">
@@ -19,7 +21,7 @@
             <li><a id="navAbout" href="about.html">About</a></li>
         </ul>
         <ul class="nav-list" onclick="confirmLogout()">
-            <p class="cursor">Loading...</p> 
+            <p class="cursor">Loading...</p>
         </ul>
     </navbar>
 
@@ -40,17 +42,21 @@
                 <div class="flex items-center space-x-6">
                     <div class="text-sm text-gray-600">Projects / <span class="font-medium">Pothik</span></div>
                     <div class="relative">
-                        <button class="flex items-center px-3 py-1 border rounded-md text-sm text-gray-700 hover:bg-gray-100">
+                        <button
+                            class="flex items-center px-3 py-1 border rounded-md text-sm text-gray-700 hover:bg-gray-100">
                             All Sprints
-                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" stroke-width="2"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                             </svg>
                         </button>
                     </div>
                     <div class="flex space-x-4">
                         <a id="topBoard" href="#" class="text-sm underline text-gray-700 hover:text-blue-600">Board</a>
-                        <a id="topBacklog" href="#" class="text-sm underline text-gray-700 hover:text-blue-600">Backlog</a>
-                        <a id="topSummary" href="#" class="text-sm underline text-gray-700 hover:text-blue-600">Summary</a>
+                        <a id="topBacklog" href="#"
+                            class="text-sm underline text-gray-700 hover:text-blue-600">Backlog</a>
+                        <a id="topSummary" href="#"
+                            class="text-sm underline text-gray-700 hover:text-blue-600">Summary</a>
                         <a id="topTeam" href="#" class="text-sm underline text-gray-700 hover:text-blue-600">Team</a>
                     </div>
                 </div>
@@ -66,8 +72,8 @@
             </div>
 
             <div class="px-6 py-3">
-                <button onclick="createSprint()" 
-                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm">
+                <button onclick="createSprint()"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm">
                     Create a Sprint
                 </button>
             </div>
@@ -82,7 +88,8 @@
         <div class="footer1">
             <p style="font-family: cursive; font-size: 60px; color: white; margin-left: 50px;">Task Manager</p>
             <p style="font-family: cursive;color: white; margin-left: 50px;">
-                Task Manager is a project management and issue tracking website that helps teams plan, track, and manage work.
+                Task Manager is a project management and issue tracking website that helps teams plan, track, and manage
+                work.
             </p>
         </div>
         <div class="footer2">
@@ -99,50 +106,53 @@
     </div>
 
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const projectId = urlParams.get('id');
-        const email = urlParams.get('email');
+          const urlParams = new URLSearchParams(window.location.search);
+            const projectId = urlParams.get('id');
+            const email = urlParams.get('email');
 
-        const linksToUpdate = [
-            'linkBoard', 'linkBacklog', 'linkSummary', 'linkTeam',
-            'topBoard', 'topBacklog', 'topSummary', 'topTeam',
-            'navProjects', 'navGuide', 'navAbout',
-            'footerProjects', 'footerGuide', 'footerAbout'
-        ];
+            const linksToUpdate = [
+                'linkdashboard', 'linkbacklog', 'linktemplates/index', 'linkteam/team',
+                'topBoard', 'topBacklog', 'topSummary', 'topTeam',
+                'footerProjects', 'footerGuide', 'footerAbout'
+            ];
 
-        linksToUpdate.forEach(id => {
-            const link = document.getElementById(id);
-            if (!link) return;
-            if (id === 'linkTeam' || id === 'topTeam') {
-                link.href = `team/team.html?id=${projectId}&email=${email}`;
-            } else if (id === 'linkSummary' || id === 'topSummary') {
-                link.href = `templates/index.html?id=${projectId}&email=${email}`;
-            } else {
-                link.href = `${id.replace(/^(link|top|nav|footer)/, '').toLowerCase()}.html?id=${projectId}&email=${email}`;
-            }
-        });
+            linksToUpdate.forEach(id => {
+                const link = document.getElementById(id);
+                if (!link) return;
 
-        document.getElementById('linkBacklog').href = `backlog.html?id=${projectId}&email=${email}`;
-
-        async function initPage() {
-            try {
-                const res = await axios.get(`backend/get_project_and_user.php`, {
-                    params: { id: projectId, email: email }
-                });
-                const data = res.data;
-
-                if (!data || !data.project_name || !data.user_name) {
-                    throw new Error("Missing project_name or user_name in response");
+                if (id === 'linkdashboard' || id === 'topBoard') {
+                    link.href = `project.html?id=${projectId}&email=${email}`;
+                } else if (id === 'linkteam/team' || id === 'topTeam') {
+                    link.href = `team/team.html?id=${projectId}&email=${email}`;
+                } else if (id === 'linktemplates/index' || id === 'topSummary') {
+                    link.href = `templates/index.html?id=${projectId}&email=${email}`;
+                } else if (id === 'linkbacklog' || id === 'topBacklog') {
+                    link.href = `backlog.html?id=${projectId}&email=${email}`;
+                } else {
+                    // Fallback for footer and nav
+                    link.href = `${id.replace(/^(footer)/, '').toLowerCase()}.html?id=${projectId}&email=${email}`;
                 }
+            });
 
-                document.querySelector('.text-xl.font-bold').textContent = data.project_name;
-                document.querySelector('.cursor').textContent = data.user_name;
-                document.querySelector('.font-medium').textContent = data.project_name;
-            } catch (err) {
-                console.error("Error loading project info:", err);
-                alert("Failed to load project or user information. Please check backend response.");
+            async function initPage() {
+                try {
+                    const res = await axios.get(`backend/get_project_and_user.php`, {
+                        params: { id: projectId, email: email }
+                    });
+                    const data = res.data;
+
+                    if (!data || !data.project_name || !data.user_name) {
+                        throw new Error("Missing project_name or user_name in response");
+                    }
+
+                    document.querySelector('.text-xl.font-bold').textContent = data.project_name;
+                    document.querySelector('.cursor').textContent = data.user_name;
+                    document.querySelector('.font-medium').textContent = data.project_name;
+                } catch (err) {
+                    console.error("Error loading project info:", err);
+                    alert("Failed to load project or user information. Please check backend response.");
+                }
             }
-        }
 
         async function createSprint() {
             const sprintName = prompt("Enter sprint name:");
@@ -211,7 +221,6 @@
             container.appendChild(sprintDiv);
         }
 
-
         async function createIssue(sprintId) {
             const title = prompt("Issue title:");
             const description = prompt("Issue description:");
@@ -271,7 +280,6 @@
             }
         }
 
-
         initPage();
         loadSprints();
 
@@ -282,4 +290,5 @@
         }
     </script>
 </body>
+
 </html>

@@ -1,34 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Scrum Board</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100">
 
-  <!-- Navbar -->
+<body class="bg-gray-100">
   <div class="bg-gray-300 flex justify-between items-center p-4">
     <div class="text-xl font-semibold">Projects</div>
-    <div class="flex gap-6" id="navbarLinks">
-      <!-- Links will be injected by JS -->
-    </div>
+    <div class="flex gap-6" id="navbarLinks"></div>
     <div class="w-10 h-10 bg-white rounded-full flex justify-center items-center">👤</div>
   </div>
 
-  <!-- Sidebar & Main -->
   <div class="flex">
-    <!-- Sidebar -->
     <div class="w-1/5 bg-pink-200 h-screen p-4">
       <h2 class="text-xl font-bold mb-4">Pothik</h2>
       <div class="text-sm">Planning</div>
-      <ul class="space-y-2 mt-4" id="sidebarLinks">
-        <!-- Sidebar links will be injected by JS -->
-      </ul>
+      <ul class="space-y-2 mt-4" id="sidebarLinks"></ul>
     </div>
 
-    <!-- Main Content -->
     <div class="flex-1 p-6">
       <div class="flex justify-between items-center mb-4">
         <div>
@@ -37,25 +30,24 @@
         </div>
       </div>
 
-      <!-- Task Columns -->
       <div class="grid grid-cols-3 gap-4">
-        <!-- To Do -->
         <div>
           <h3 class="text-center font-semibold">To Do</h3>
           <div id="todoColumn" class="bg-rose-200 min-h-[300px] p-2 rounded mb-2"></div>
-          <button onclick="openTaskModal('To Do')" class="w-full bg-blue-500 text-white px-4 py-2 rounded">+ Create Task</button>
+          <button onclick="openTaskModal('To Do')" class="w-full bg-blue-500 text-white px-4 py-2 rounded">+ Create
+            Task</button>
         </div>
-        <!-- In Progress -->
         <div>
           <h3 class="text-center font-semibold">In Progress</h3>
           <div id="inProgressColumn" class="bg-rose-200 min-h-[300px] p-2 rounded mb-2"></div>
-          <button onclick="openTaskModal('In Progress')" class="w-full bg-yellow-500 text-white px-4 py-2 rounded">+ Create Task</button>
+          <button onclick="openTaskModal('In Progress')" class="w-full bg-yellow-500 text-white px-4 py-2 rounded">+
+            Create Task</button>
         </div>
-        <!-- Done -->
         <div>
           <h3 class="text-center font-semibold">Done</h3>
           <div id="doneColumn" class="bg-rose-200 min-h-[300px] p-2 rounded mb-2"></div>
-          <button onclick="openTaskModal('Done')" class="w-full bg-green-500 text-white px-4 py-2 rounded">+ Create Task</button>
+          <button onclick="openTaskModal('Done')" class="w-full bg-green-500 text-white px-4 py-2 rounded">+ Create
+            Task</button>
         </div>
       </div>
     </div>
@@ -78,42 +70,41 @@
     const projectId = urlParams.get("id");
     const email = urlParams.get("email");
 
+    console.log("URL Params:", projectId, email);
+
     if (!projectId || !email) {
-      alert("Missing project ID or email. Redirecting...");
+      alert("Missing project ID or email in URL.");
       window.location.href = "dashboard.html";
     }
 
-    // Helper to build query string
     function buildQuery() {
       return `?id=${encodeURIComponent(projectId)}&email=${encodeURIComponent(email)}`;
     }
 
-    // Inject navbar links with params
     function injectNavbarLinks() {
       const navbarLinks = document.getElementById("navbarLinks");
       navbarLinks.innerHTML = `
-        <a href="project.html${buildQuery()}">Projects</a>
-        <a href="project_guide.html${buildQuery()}">Product Guide</a>
-        <a href="about.html${buildQuery()}">About</a>
-      `;
+          <a href="project.html${buildQuery()}">Projects</a>
+          <a href="project_guide.html${buildQuery()}">Product Guide</a>
+          <a href="about.html${buildQuery()}">About</a>
+        `;
     }
 
-    // Inject sidebar links with params
     function injectSidebarLinks() {
       const sidebarLinks = document.getElementById("sidebarLinks");
       sidebarLinks.innerHTML = `
-        <li><a href="project.html${buildQuery()}" class="block">📋 Board</a></li>
-        <li><a href="backlog.html${buildQuery()}" class="block">🔍 Backlog</a></li>
-        <li><a href="templates/index.html${buildQuery()}" class="block">📑 Summary</a></li>
-        <li><a href="team/team.html${buildQuery()}" class="block">👥 Team</a></li>
-      `;
+          <li><a href="project.html${buildQuery()}" class="block">📋 Board</a></li>
+          <li><a href="backlog.html${buildQuery()}" class="block">🔍 Backlog</a></li>
+          <li><a href="templates/index.html${buildQuery()}" class="block">📑 Summary</a></li>
+          <li><a href="team/team.html${buildQuery()}" class="block">👥 Team</a></li>
+        `;
     }
 
     async function fetchProject() {
       const res = await fetch("backend/get_project_by_id.php", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: projectId })
+        body: JSON.stringify({ id: projectId, email: email })
       });
       const data = await res.json();
       if (data.success) {
@@ -122,29 +113,37 @@
     }
 
     async function fetchSprints() {
-      const res = await fetch("backend/get_sprints.php", {
-        method: "POST",
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ project_id: projectId })
-      });
-      const data = await res.json();
-      const filter = document.getElementById("sprintFilter");
-      filter.innerHTML = `<option value="">All Sprints</option>`;
-      data.sprints.forEach(sprint => {
-        const opt = document.createElement("option");
-        opt.value = sprint.sprint_id;
-        opt.textContent = sprint.sprint_name;
-        filter.appendChild(opt);
-      });
-      filter.onchange = loadTasks;
-    }
+        try {
+          const res = await fetch(`backend/get_sprints.php?project_id=${encodeURIComponent(projectId)}`);
+          const data = await res.json();
+
+          if (!Array.isArray(data)) {
+            console.error("Unexpected response format:", data);
+            return;
+          }
+
+          const filter = document.getElementById("sprintFilter");
+          filter.innerHTML = `<option value="">All Sprints</option>`;
+          data.forEach(sprint => {
+            const opt = document.createElement("option");
+            opt.value = sprint.sprint_id;
+            opt.textContent = sprint.sprint_name;
+            filter.appendChild(opt);
+          });
+
+          filter.onchange = loadTasks;
+        } catch (error) {
+          console.error("Failed to fetch sprints:", error);
+        }
+      }
+
 
     async function loadTasks() {
       const sprintId = document.getElementById("sprintFilter").value;
       const res = await fetch("backend/get_tasks.php", {
         method: "POST",
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ project_id: projectId, sprint_id: sprintId })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ project_id: projectId, sprint_id: sprintId, email: email })
       });
       const data = await res.json();
       ["todoColumn", "inProgressColumn", "doneColumn"].forEach(id => document.getElementById(id).innerHTML = "");
@@ -182,7 +181,7 @@
       try {
         const res = await fetch("backend/create_task.php", {
           method: "POST",
-          headers: {'Content-Type': 'application/json'},
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             title,
             description,
@@ -215,5 +214,7 @@
       await loadTasks();
     };
   </script>
+  
 </body>
+
 </html>
