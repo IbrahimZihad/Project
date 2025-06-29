@@ -17,9 +17,9 @@
       <span class="text-3xl font-bold text-white font-cursive">Task Manager</span>
     </div>
     <ul class="flex space-x-8">
-      <li><a href="../project.html" class="text-white hover:underline">Projects</a></li>
-      <li><a href="../project_guide.html" class="text-white hover:underline">Product Guide</a></li>
-      <li><a href="../about.html" class="text-white hover:underline">About</a></li>
+      <li><a id="projects-link" class="text-white hover:underline">Projects</a></li>
+      <li><a id="guide-link" class="text-white hover:underline">Product Guide</a></li>
+      <li><a id="about-link" class="text-white hover:underline">About</a></li>
     </ul>
   </nav>
 
@@ -31,16 +31,16 @@
       <div class="text-sm mb-2">Planning</div>
       <ul class="space-y-2 mt-2">
         <li>
-          <a href="../dashboard.html" class="block hover:underline">📋 Board</a>
+          <a id="board-link" class="block hover:underline">📋 Board</a>
         </li>
         <li>
-          <a href="../backlog.html" class="block hover:underline">🔍 Backlog</a>
+          <a id="backlog-link" class="block hover:underline">🔍 Backlog</a>
         </li>
         <li>
-          <a href="../templates/index.html" class="block font-bold hover:underline">📑 Summary</a>
+          <a id="summary-link" class="block font-bold hover:underline">📑 Summary</a>
         </li>
         <li>
-          <a href="../team/team.html" class="block hover:underline">👥 Team</a>
+          <a id="team-link" class="block hover:underline">👥 Team</a>
         </li>
       </ul>
       </aside>
@@ -123,9 +123,9 @@
       <div>
         <p class="font-semibold mb-2">Quick Links</p>
         <ul class="space-y-1">
-          <li><a href="projects.html" class="hover:underline">Projects</a></li>
-          <li><a href="guide.html" class="hover:underline">Product Guide</a></li>
-          <li><a href="about.html" class="hover:underline">About</a></li>
+          <li><a id="footer-projects-link" class="hover:underline">Projects</a></li>
+          <li><a id="footer-guide-link" class="hover:underline">Product Guide</a></li>
+          <li><a id="footer-about-link" class="hover:underline">About</a></li>
         </ul>
       </div>
       <div>
@@ -141,8 +141,42 @@
     </div>
   </footer>
 
-  <!-- Chart Setup -->
+  <!-- Chart Setup and Link Parameter Handling -->
   <script>
+    // Helper to get query params
+    function getQueryParams() {
+      const params = {};
+      window.location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (str, key, value) {
+        params[key] = decodeURIComponent(value);
+      });
+      return params;
+    }
+
+    // Set all relevant links with email and project_id
+    function setLinks() {
+      const params = getQueryParams();
+      const email = encodeURIComponent(params.email || '');
+      const projectId = encodeURIComponent(params.project_id || '');
+
+      // Header links
+      document.getElementById('projects-link').href = `../project.html?email=${email}&project_id=${projectId}`;
+      document.getElementById('guide-link').href = `../project_guide.html?email=${email}&project_id=${projectId}`;
+      document.getElementById('about-link').href = `../about.html?email=${email}&project_id=${projectId}`;
+
+      // Sidebar links
+      document.getElementById('board-link').href = `../dashboard.html?email=${email}&project_id=${projectId}`;
+      document.getElementById('backlog-link').href = `../backlog.html?email=${email}&project_id=${projectId}`;
+      document.getElementById('summary-link').href = `../templates/index.html?email=${email}&project_id=${projectId}`;
+      document.getElementById('team-link').href = `../team/team.html?email=${email}&project_id=${projectId}`;
+
+      // Footer links
+      document.getElementById('footer-projects-link').href = `projects.html?email=${email}&project_id=${projectId}`;
+      document.getElementById('footer-guide-link').href = `guide.html?email=${email}&project_id=${projectId}`;
+      document.getElementById('footer-about-link').href = `about.html?email=${email}&project_id=${projectId}`;
+    }
+
+    setLinks();
+
     async function loadData() {
       try {
         const res = await fetch('/api/work-items');
